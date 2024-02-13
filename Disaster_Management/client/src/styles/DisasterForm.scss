@@ -1,0 +1,135 @@
+.myForm {
+    max-width: 400px;
+    margin: 0 auto;
+    padding: 20px;
+    background-color: #f4f4f4;
+    border-radius: 8px;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+  
+    label {
+      display: block;
+      margin-bottom: 8px;
+      font-weight: bold;
+    }
+  
+    input,
+    textarea,
+    select {
+      width: 100%;
+      padding: 8px;
+      margin-bottom: 16px;
+      border: 1px solid #ccc;
+      border-radius: 4px;
+      box-sizing: border-box;
+      font-size: 14px;
+  
+      &:focus {
+        outline: none;
+        border-color: #3498db;
+      }
+    }
+  
+    textarea {
+      resize: vertical;
+    }
+  
+    button {
+      background-color: #3498db;
+      color: #fff;
+      padding: 10px 20px;
+      border: none;
+      border-radius: 4px;
+      cursor: pointer;
+      font-size: 16px;
+  
+      &:hover {
+        background-color: #207bd9;
+      }
+    }
+  
+    img {
+      display: block;
+      margin-top: 10px;
+      max-width: 100px;
+      max-height: 100px;
+      border-radius: 4px;
+    }
+  }
+  // src/styles/DisasterGrid.scss
+
+.disaster-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr); // Adjust the number of columns as needed
+  gap: 16px; // Adjust the gap between items as needed
+}
+
+.grid-item {
+  border: 1px solid #ccc;
+  padding: 16px;
+  border-radius: 8px;
+  text-align: left;
+
+  img {
+    max-width: 100%;
+    max-height: 100px;
+    margin-top: 8px;
+  }
+
+  button {
+    margin-top: 8px;
+    cursor: pointer;
+    background-color: #007bff;
+    color: #fff;
+    border: none;
+    padding: 8px 16px;
+    border-radius: 4px;
+
+    &:hover {
+      background-color: #0056b3;
+    }
+  }
+}
+// src/styles/DisasterGrid.scss
+
+.disaster-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr); // Adjust the number of columns as needed
+    gap: 16px; // Adjust the gap between items as needed
+  }
+  
+  .grid-item {
+    border: 1px solid #ccc;
+    padding: 16px;
+    border-radius: 8px;
+    display: grid;
+    grid-template-rows: repeat(2, auto); // 2 rows for heading and value
+    text-align: left;
+  
+    div {
+      &:first-child {
+        font-weight: bold;
+        margin-bottom: 8px;
+      }
+    }
+  
+    img {
+      max-width: 100%;
+      max-height: 100px;
+      margin-top: 8px;
+    }
+  
+    button {
+      margin-top: 8px;
+      cursor: pointer;
+      background-color: #007bff;
+      color: #fff;
+      border: none;
+      padding: 8px 16px;
+      border-radius: 4px;
+  
+      &:hover {
+        background-color: #0056b3;
+      }
+    }
+  }
+  

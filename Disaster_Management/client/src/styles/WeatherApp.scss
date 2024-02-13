@@ -1,0 +1,109 @@
+
+// Weather.scss
+.weather-container {
+    text-align: center;
+    margin: 20px;
+  
+    h2 {
+      color: #2399e8;
+    }
+  
+    label {
+      display: block;
+      margin: 10px 0;
+    }
+  
+    input {
+      padding: 5px;
+      margin-left: 5px;
+    }
+  
+    button {
+      background-color: #2399e8;
+      color: white;
+      padding: 8px 15px;
+      margin-top: 10px;
+      cursor: pointer;
+      border: none;
+      border-radius: 5px;
+    }
+  
+    .error-message {
+      color: #c92627;
+    }
+  
+    .warning-message {
+      color: red;
+    }
+  
+    .forecast-container {
+      margin-top: 20px;
+  
+      h3 {
+        color: #2399e8;
+      }
+  
+      ul {
+        list-style: none;
+        padding: 0;
+        margin: 0;
+  
+        li {
+          margin: 5px 0;
+        }
+      }
+    }
+  }
+  
+
+
+.weather-icon-container {
+    padding: 20px;
+    border: 1px solid #ddd;
+    margin: 20px;
+  
+    .weather-icon {
+      width: 50px; /* Adjust the size as needed */
+      height: 50px; /* Adjust the size as needed */
+      margin-right: 10px;
+    }
+  }
+
+
+
+  
+  .popup {
+    background-color: #fff;
+    border: 1px solid #ccc;
+    padding: 10px;
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    z-index: 999;
+  }
+
+  .modal-content {
+   
+    text-align: center;
+  }
+
+
+  
+  .weather-icon {
+    width: 50px; /* Set the desired width */
+    height: 50px; /* Set the desired height */
+    margin: 5px; /* Add some margin for spacing */
+    object-fit: cover; /* Maintain aspect ratio and cover the container */
+  }
+  
+  /* Apply flex styles to list items for consistent alignment */
+  ul {
+    display: flex;
+    list-style: none;
+    padding: 0;
+  }
+  
+  li {
+    margin: 10px; /* Add margin for spacing between list items */
+  }
