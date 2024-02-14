@@ -2,11 +2,20 @@
 const express = require('express');
 const disasterController = require('../../src/controllers/disasterController.js');
 const weatherController = require('../../src/controllers/weatherController.js');
+const router=express.Router();
+const cors=require('cors')
+const {test,registerUser,loginUser,getProfile}=require('../controllers/authController')
+
+
+router.post('/register',registerUser);
+router.post('/login',loginUser);
+router.get('/profile',getProfile);
+
 
 const multer = require('multer');
 const path = require('path');
 
-const router = express.Router();
+
 
 //multer file part
 const storage = multer.diskStorage({
