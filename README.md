@@ -1,3 +1,3 @@
 Disaster Management System
 
-Technologu Used:MERN
+Technology Used:MERN
