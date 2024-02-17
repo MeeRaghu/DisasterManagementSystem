@@ -1,5 +1,5 @@
 /* client/src/styles/Modal.scss */
-.modal-overlay {
+.modal-overlay-weather {
     position: fixed;
     top: 0;
     left: 0;
@@ -11,13 +11,13 @@
     align-items: center;
   }
   
-  .modal-content {
+  .modal-content-weather {
     background: blue;
     padding: 20px;
     border-radius: 8px;
     //border: 2px solid red; /* Debugging border */
     box-shadow: 0 0 10px rgba(0, 0, 0, 0.3); /* Debugging box shadow */
-    z-index: 1000; /* Adjust the value as needed */
+    z-index: 1000; 
   }
   
   

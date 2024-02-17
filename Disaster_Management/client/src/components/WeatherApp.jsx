@@ -14,7 +14,7 @@ const Weather = () => {
 
   const handleFetchWeather = async () => {
     try {
-      const response = await axios.post('http://localhost:5530/getWeather', { city });
+      const response = await axios.post('http://localhost:5500/getWeather', { city });
       const data = response.data;
   
       if (data.success) {

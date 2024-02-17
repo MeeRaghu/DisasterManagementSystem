@@ -1,97 +1,115 @@
 const User = require('../models/user');
-const {hashPassword,comparePassword}=require('../helpers/auth')
+const { hashPassword, comparePassword } = require('../helpers/auth');
 const jwt = require('jsonwebtoken');
 
+const test = (req, res) => {
+    res.json('test is working');
+};
 
-const test=(req,res)=>{
-    res.json('test is working')
-}
-//Register Endpoint
-const registerUser =async(req,res) =>{
-    try{
-        const {name,email,password} = req.body;
-        //check if name was entered
-        if(!name){
-            return res.json({
-                error:'name is required'
-            })
-        };
-        //check if password is good
-        if(!password||password.length<6){
-            return res.json({
-                error:'password is required and should be atleast 6 characters long'
-            })
-        };
+// Register Endpoint
+// Register Endpoint
+const registerUser = async (req, res) => {
+    try {
+        const { name, email, password, confirmPassword, address, city, postalCode, country } = req.body;
 
-        //check email
-        const exist = await User.findOne({email});
-        if(exist){
+        // Check if name, email, and password were entered
+        if (!name || !email || !password) {
             return res.json({
-                error:'Email is taken already'
-            })
+                error: 'Name, email, and password are required',
+            });
         }
-        const hashedPassword=await hashPassword(password)
-        //create user in database
-        const user=await User.create({
+
+        // Check if password is at least 6 characters long
+        if (password.length < 6) {
+            return res.json({
+                error: 'Password should be at least 6 characters long',
+            });
+        }
+
+        // Check if passwords match
+        if (password !== confirmPassword) {
+            return res.json({
+                error: 'Passwords do not match',
+            });
+        }
+
+        // Check if email is taken
+        const exist = await User.findOne({ email });
+        if (exist) {
+            return res.json({
+                error: 'Email is taken already',
+            });
+        }
+
+        // Hash the password
+        const hashedPassword = await hashPassword(password);
+
+        // Create user in the database
+        const user = await User.create({
             name,
             email,
             password: hashedPassword,
+            confirmPassword,
+            address,
+            city,
+            postalCode,  
+            country,
         });
 
-        return res.json(user)
-    }catch(error){
-        console.log(error)
-
+        return res.json(user);
+    } catch (error) {
+        console.log(error);
     }
-
 };
-//Login Endpoint
-const loginUser=async(req,res)=>{
-    try{
-        const{email,password}=req.body;
-        //check if users exist
-        const user= await User.findOne({email});
-        if(!user){
+
+
+// Login Endpoint
+const loginUser = async (req, res) => {
+    try {
+        const { email, password } = req.body;
+
+        // Check if user exists
+        const user = await User.findOne({ email });
+        if (!user) {
             return res.json({
-                error:'No user found'
-            })
+                error: 'No user found',
+            });
         }
-        //check if password match
-        const match=await comparePassword(password,user.password)
-        if(match){
-            jwt.sign({email:user.email,id:user._id,name:user.name},process.env.JWT_SECRET,{},(err,token)=>{
-                if(err) throw err;
-                res.cookie('token',token).json(user)
-            })
+
+        // Check if password matches
+        const match = await comparePassword(password, user.password);
+        if (match) {
+            jwt.sign({ email: user.email, id: user._id, name: user.name }, process.env.JWT_SECRET, {}, (err, token) => {
+                if (err) throw err;
+                res.cookie('token', token).json(user);
+            });
         }
-        if(!match){
+
+        if (!match) {
             res.json({
-                error:"password not match"
-            })
+                error: 'Password does not match',
+            });
         }
-
-    }catch(error){
-        console.log(error)
-
+    } catch (error) {
+        console.log(error);
     }
+};
 
-}
-const getProfile=(req,res)=>{
-    const {token}=req.cookies
-    if(token){
-        jwt.verify(token,process.env.JWT_SECRET,{},(err,user)=>{
-            if(err) throw err;
-            res.json(user)
-        })
-    }else{
-        res.json(null)
+const getProfile = (req, res) => {
+    const { token } = req.cookies;
+    if (token) {
+        jwt.verify(token, process.env.JWT_SECRET, {}, (err, user) => {
+            if (err) throw err;
+            res.json(user);
+        });
+    } else {
+        res.json(null);
     }
+};
 
-}
-
-module.exports={
+module.exports = {
     test,
     registerUser,
     loginUser,
-    getProfile
-}
+    getProfile,
+};
