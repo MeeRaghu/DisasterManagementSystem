@@ -21,7 +21,7 @@ const Header = ({ className }) => {
     <header className={`header ${className}`}>
       <nav className="nav">
         <div className="logo">
-         
+         <p>Binary Bridge</p>
         </div>
         <div className="nav-links">
           {/* Use a button instead of Link to trigger weather popup */}

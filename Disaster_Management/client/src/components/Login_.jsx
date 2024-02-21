@@ -28,15 +28,22 @@ export default function Login() {
 
         try {
             const { data: responseData } = await axios.post('http://localhost:5500/login', data);
+
             if (responseData.error) {
+                // Clear previous errors
+                setErrors({});
+
+                // Handle different server-side errors
                 if (responseData.error === 'No user found') {
                     setErrors({ email: 'User not found', password: '' });
                 } else if (responseData.error === 'Password does not match') {
                     setErrors({ email: '', password: 'Password does not match' });
                 } else {
+                    // Display other server-side errors using toast
                     toast.error(responseData.error);
                 }
             } else {
+                // Clear form data and errors on successful login
                 setData({});
                 setErrors({});
                 navigate('/disasterCard');
@@ -45,13 +52,19 @@ export default function Login() {
             console.log(error);
         }
     };
-
+    const isValidEmail = (email) => {
+        // Simple email validation regex, you might want to use a more robust solution
+        const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+        return emailRegex.test(email);
+    };
     const validateForm = (formData) => {
         const errors = {};
 
         // Validate email
         if (!formData.email) {
             errors.email = 'Email is required';
+        } else if (!isValidEmail(formData.email)) {
+            errors.email = 'Invalid email format';
         }
 
         // Validate password
@@ -61,6 +74,7 @@ export default function Login() {
 
         return errors;
     };
+
     const resetForm = () => {
         setData({
             email: '',
@@ -75,7 +89,7 @@ export default function Login() {
             <div id="login-container" className="mt-5">
                 <div className="form-container">
                     <h2 className="text-center mb-4">Login</h2>
-                    <form onSubmit={loginUser}>
+                    <form onSubmit={loginUser} noValidate>
                         <div className="mb-3">
                             <label htmlFor="email" className="form-label">Email</label>
                             <input

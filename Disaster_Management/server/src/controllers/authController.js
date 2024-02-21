@@ -10,7 +10,7 @@ const test = (req, res) => {
 // Register Endpoint
 const registerUser = async (req, res) => {
     try {
-        const { name, email, password, confirmPassword, address, city, postalCode, country } = req.body;
+        const { name, email, password, confirmpassword, address, city, postalCode, country } = req.body;
 
         // Check if name, email, and password were entered
         if (!name || !email || !password) {
@@ -27,7 +27,7 @@ const registerUser = async (req, res) => {
         }
 
         // Check if passwords match
-        if (password !== confirmPassword) {
+        if (password !== confirmpassword) {
             return res.json({
                 error: 'Passwords do not match',
             });
@@ -49,7 +49,7 @@ const registerUser = async (req, res) => {
             name,
             email,
             password: hashedPassword,
-            confirmPassword,
+            confirmpassword,
             address,
             city,
             postalCode,  

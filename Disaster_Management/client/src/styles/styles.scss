@@ -51,11 +51,13 @@ body {
 }
 .content-container {
   text-align: center;
-  color: black; /* Set your desired text color */
+  color: black;
   padding-top:100px;
 }
 
-
+.main-h{
+  font-weight: none;
+}
 
 /* Different styles for the home page */
 .home-header {
