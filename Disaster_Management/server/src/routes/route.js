@@ -32,9 +32,14 @@ const storage = multer.diskStorage({
 
 const upload = multer({ storage: storage });
 
-// Use the controller function for handling disaster submissions
+
+
 router.post('/submitDisaster', upload.single('myFile'), disasterController.submitDisaster);
 router.get('/getDisasters', disasterController.getDisasters);
+router.put('/editDisaster/:id', upload.single('image'), disasterController.editDisaster);
+router.delete('/deleteDisaster/:id', disasterController.deleteDisaster);
 // Weather route
 router.post('/getWeather', weatherController.getWeather);
+
 module.exports = router;
+

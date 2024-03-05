@@ -1,24 +1,24 @@
-// src/components/DisasterForm.jsx
 import React, { useState } from 'react';
-import {  useNavigate } from 'react-router-dom'; // Use useNavigate for navigation
+import { useNavigate } from 'react-router-dom';
 import axios from 'axios';
 import '../styles/DisasterForm.scss';
+import Header from '../components/Header';
+import Footer from '../components/Footer';
 
 const DisasterForm = () => {
-    const navigate = useNavigate();
+  const navigate = useNavigate();
   const [inputField, setInputField] = useState({
     type: '',
     location: '',
     description: '',
-    dateAndTime: '', // New field for Date and Time
-    severityLevel: 'low', // Default to 'Low'
+    dateAndTime: '',
+    severityLevel: 'low',
     image: '',
   });
 
   const handleInputChange = (e) => {
     setInputField({ ...inputField, [e.target.name]: e.target.value });
   };
-  
 
   const uploadImage = (event) => {
     setInputField({ ...inputField, image: event.target.files[0] });
@@ -26,7 +26,7 @@ const DisasterForm = () => {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-  
+
     try {
       const formdata = new FormData();
       formdata.append('type', inputField.type);
@@ -34,84 +34,148 @@ const DisasterForm = () => {
       formdata.append('description', inputField.description);
       formdata.append('dateAndTime', inputField.dateAndTime);
       formdata.append('severityLevel', inputField.severityLevel);
-  
-      // Append the image file if it exists
+
       if (inputField.image) {
         formdata.append('myFile', inputField.image, inputField.image.name);
       }
-  
-      console.log(formdata);
-      console.log('Submit Data:', inputField);
-  
-      const response = await axios.post('http://localhost:5500/submitDisaster', formdata);
-  
-      console.log('Server Response:', response.data);
-  
-      alert('Disaster submitted successfully!');
-      
-      // Extract serializable data from FormData
-      const formDataObject = {};
-      formdata.forEach((value, key) => {
-        formDataObject[key] = value;
-      });
-  
-      // Redirect to DisasterInfo page after successful submission
-      navigate(`/disasterCard`);
 
-      console.log(formDataObject);
+      const response = await axios.post('http://localhost:5500/submitDisaster', formdata);
+
+      console.log('Server Response:', response.data);
+
+      alert('Disaster submitted successfully!');
     } catch (error) {
       console.error('Error submitting disaster:', error);
-  
+
       if (error.response) {
         console.error('Server Response Data:', error.response.data);
       }
     }
   };
-  
+
+  const handleCheckDisasters = () => {
+    navigate('/disasterList');
+  };
 
   return (
-    <form className="myForm" onSubmit={handleSubmit}>
-      <label>Type of Disaster:</label>
-      <input type="text" name="type" onChange={handleInputChange} required />
+  <div>
+      <Header />
+    <div className="container mt-5">
+    <h2 className="text-center mb-4">Disaster Form</h2>
+      <form className="myForm" onSubmit={handleSubmit}>
+        <div className="mb-3">
+          <label htmlFor="type" className="form-label">
+            Type of Disaster:
+          </label>
+          <input
+            type="text"
+            className="form-control"
+            id="type"
+            name="type"
+            value={inputField.type}
+            onChange={handleInputChange}
+            required
+          />
+        </div>
 
-      <label>Location:</label>
-      <input type="text" name="location" onChange={handleInputChange} required />
+        <div className="mb-3">
+          <label htmlFor="location" className="form-label">
+            Location:
+          </label>
+          <input
+            type="text"
+            className="form-control"
+            id="location"
+            name="location"
+            value={inputField.location}
+            onChange={handleInputChange}
+            required
+          />
+        </div>
 
-      <label>Description:</label>
-      <textarea name="description" onChange={handleInputChange} required></textarea>
+        <div className="mb-3">
+          <label htmlFor="description" className="form-label">
+            Description:
+          </label>
+          <textarea
+            className="form-control"
+            id="description"
+            name="description"
+            value={inputField.description}
+            onChange={handleInputChange}
+            required
+          ></textarea>
+        </div>
 
-      <label>Date and Time:</label>
-      <input type="datetime-local" name="dateAndTime" onChange={handleInputChange} required />
+        <div className="mb-3">
+          <label htmlFor="dateAndTime" className="form-label">
+            Date and Time:
+          </label>
+          <input
+            type="datetime-local"
+            className="form-control"
+            id="dateAndTime"
+            name="dateAndTime"
+            value={inputField.dateAndTime}
+            onChange={handleInputChange}
+            required
+          />
+        </div>
 
-      <label>Severity Level:</label>
-      <select name="severityLevel" onChange={handleInputChange} required>
-        <option value="low">Low</option>
-        <option value="moderate">Moderate</option>
-        <option value="high">High</option>
-      </select>
+        <div className="mb-3">
+          <label htmlFor="severityLevel" className="form-label">
+            Severity Level:
+          </label>
+          <select
+            className="form-select"
+            id="severityLevel"
+            name="severityLevel"
+            value={inputField.severityLevel}
+            onChange={handleInputChange}
+            required
+          >
+            <option value="low">Low</option>
+            <option value="moderate">Moderate</option>
+            <option value="high">High</option>
+          </select>
+        </div>
 
-      <label>
-        Select Image:
-        <input
-          type="file"
-          accept="image/*"
-          name="myFile"
-          onChange={uploadImage}
-        />
-      </label>
+        <div className="mb-3">
+          <label htmlFor="myFile" className="form-label">
+            Select Image:
+          </label>
+          <input
+            type="file"
+            accept="image/*"
+            className="form-control"
+            id="myFile"
+            name="myFile"
+            onChange={uploadImage}
+          />
+        </div>
 
-      {inputField.image && (
-        <img
-          src={URL.createObjectURL(inputField.image)}
-          alt="Selected"
-          style={{ maxWidth: '100px', maxHeight: '100px' }}
-        />
-      )}
+        {inputField.image && (
+          <img
+            src={URL.createObjectURL(inputField.image)}
+            alt="Selected"
+            style={{ maxWidth: '100px', maxHeight: '100px' }}
+          />
+        )}
 
-      <button type="submit">Submit</button>
-    </form>
+        <div className="mb-3">
+          <button type="submit" className="btn btn-primary">
+            Submit
+          </button>
+          <button type="button" className="btn btn-secondary ms-2" onClick={handleCheckDisasters}>
+            Check Disaster List
+          </button>
+        </div>
+      </form>
+      
+    </div>
+    <Footer />
+    </div>
   );
 };
 
 export default DisasterForm;
-
