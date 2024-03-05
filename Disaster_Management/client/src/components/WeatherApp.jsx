@@ -1,4 +1,4 @@
-// Weather.jsx
+// WeatherApp.jsx
 
 import React, { useState } from 'react';
 import axios from 'axios';
@@ -77,8 +77,8 @@ const Weather = () => {
         <div>
           <h3>Current Weather:</h3>
           <p>{`${formatDate(forecast[0].date)}: ${forecast[0].morning?.description || 'N/A'}`}</p>
-          <p>{`Temperature: ${forecast[0].morning?.temperature || 'N/A'}°C`}</p>
-          <p>{`Feels like: ${forecast[0].morning?.feelsLike || 'N/A'}°C`}</p>
+          <p>{`Temperature: ${Math.floor(forecast[0].morning?.temperature) || 'N/A'}°C`}</p>
+          <p>{`Feels like: ${Math.floor(forecast[0].morning?.feelsLike) || 'N/A'}°C`}</p>
           <p>{`Wind: ${forecast[0].morning?.windSpeed || 'N/A'}m/s ${forecast[0].morning?.windDirection || 'N/A'}`}</p>
           <p>{`Pressure: ${forecast[0].morning?.pressure || 'N/A'}hPa`}</p>
           <p>{`Humidity: ${forecast[0].morning?.humidity || 'N/A'}%`}</p>
@@ -94,7 +94,7 @@ const Weather = () => {
           <ul>
             {forecast.map((item, index) => (
               <li key={index}>
-                {`${formatDate(item.date)} ${item.morning?.temperature || 'N/A'} / ${item.morning?.feelsLike || 'N/A'}°C, ${item.morning?.description || 'N/A'}`}
+                {`${formatDate(item.date)}, ${Math.floor(item.morning?.temperature) || 'N/A'} / ${Math.floor(item.morning?.feelsLike) || 'N/A'}°C, ${item.morning?.description || 'N/A'}`}
                 <img src={`/assets/${item.morning?.description.toLowerCase()}.png`} alt={item.morning?.description} className="weather-icon" />
               </li>
             ))}
