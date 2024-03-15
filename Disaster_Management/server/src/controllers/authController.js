@@ -95,15 +95,35 @@ const loginUser = async (req, res) => {
     }
 };
 
-const getProfile = (req, res) => {
-    const { token } = req.cookies;
-    if (token) {
-        jwt.verify(token, process.env.JWT_SECRET, {}, (err, user) => {
-            if (err) throw err;
-            res.json(user);
-        });
-    } else {
-        res.json(null);
+const getProfile = async (req, res) => {
+    try {
+        const { token } = req.cookies;
+        if (!token) {
+            return res.json(null);
+        }
+
+        const user = await jwt.verify(token, process.env.JWT_SECRET);
+        const userData = await User.findById(user.id);
+
+        if (!userData) {
+            return res.json(null);
+        }
+
+        const { name, email, isAdmin } = userData;
+        res.json({ name, email, isAdmin });
+    } catch (error) {
+        console.error('Error fetching profile:', error);
+        res.status(500).json({ error: 'Internal server error' });
+    }
+};
+const logoutUser = (req, res) => {
+    try {
+        // Clear the token cookie
+        res.clearCookie('token');
+        res.json({ message: 'Logout successful' });
+    } catch (error) {
+        console.error('Error logging out:', error);
+        res.status(500).json({ error: 'Internal server error' });
     }
 };
 
@@ -112,4 +132,8 @@ module.exports = {
     registerUser,
     loginUser,
     getProfile,
+    logoutUser, 
 };
+
+
+
