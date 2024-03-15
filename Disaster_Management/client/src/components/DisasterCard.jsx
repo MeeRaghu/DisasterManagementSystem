@@ -4,6 +4,8 @@ import Slider from 'react-slick';
 import 'slick-carousel/slick/slick.css';
 import 'slick-carousel/slick/slick-theme.css';
 import '../styles/DisasterCard.scss';
+import Header from '../components/Header'; 
+import Footer from '../components/Footer';
 
 const DisasterCard = () => {
   const [disasters, setDisasters] = useState([]);
@@ -36,6 +38,8 @@ const DisasterCard = () => {
 
   return (
     <div>
+      <Header />
+    <div>
       <h2>Disaster Cards</h2>
       <Slider {...settings}>
         {disasters.map((disaster) => (
@@ -53,6 +57,8 @@ const DisasterCard = () => {
           </div>
         ))}
       </Slider>
+    </div>
+    <Footer />
     </div>
   );
 };

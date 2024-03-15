@@ -4,12 +4,14 @@ const disasterController = require('../../src/controllers/disasterController.js'
 const weatherController = require('../../src/controllers/weatherController.js');
 const router=express.Router();
 const cors=require('cors')
-const {test,registerUser,loginUser,getProfile}=require('../controllers/authController')
+const {test,registerUser,loginUser,getProfile, logoutUser}=require('../controllers/authController')
 
 
 router.post('/register',registerUser);
 router.post('/login',loginUser);
 router.get('/profile',getProfile);
+router.post('/logout',logoutUser);
+
 
 
 const multer = require('multer');

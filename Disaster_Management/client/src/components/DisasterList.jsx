@@ -32,11 +32,19 @@ const DisasterList = () => {
   };
 
   const handleEdit = (id) => {
-    setEditingId(id);
     const editedDisaster = disasters.find((disaster) => disaster._id === id);
-    // Create a copy of the disaster object to avoid directly modifying state
-    setEditedData({ ...editedDisaster });
+    
+    // Format the existing date and time for input field
+    const formattedDateForInput = formatDateForInput(editedDisaster.dateAndTime);
+  
+    setEditingId(id);
+    // Populate editedData with the existing values
+    setEditedData({
+      ...editedDisaster,
+      dateAndTime: formattedDateForInput,
+    });
   };
+  
 
   const handleSave = async (id) => {
     console.log('Saving disaster with ID:', id);
@@ -78,7 +86,16 @@ const DisasterList = () => {
         console.error('Error saving disaster:', error);
     }
 };
+const formatDateForInput = (dateTimeString) => {
+  const date = new Date(dateTimeString);
+  const day = date.getDate().toString().padStart(2, '0');
+  const month = (date.getMonth() + 1).toString().padStart(2, '0');
+  const year = date.getFullYear();
+  const hours = date.getHours().toString().padStart(2, '0');
+  const minutes = date.getMinutes().toString().padStart(2, '0');
 
+  return `${year}-${month}-${day}T${hours}:${minutes}`;
+};
 
   const handleDelete = async (id) => {
     const confirmDelete = window.confirm('Are you sure you want to delete this disaster?');
@@ -99,8 +116,9 @@ const DisasterList = () => {
 
   const handleImageChange = (e) => {
     const imageFile = e.target.files[0];
-    setInputField({ image: imageFile });
-    handleInputChange('image', imageFile); // Pass the imageFile to handleInputChange
+    handleInputChange('image', imageFile);
+    // Clear the file input
+    e.target.value = '';
   };
 
   const toggleConfirmation = () => {
@@ -109,163 +127,185 @@ const DisasterList = () => {
 
   return (
     <div>
-        <Header />
- 
-    <div className="container mt-5">
-        
-      <h2 className="text-center mb-4">Manage Disaster List</h2>
-      <table className="table table-bordered table-hover">
-        <thead className="thead-dark">
-          <tr>
-            <th>Type</th>
-            <th>Location</th>
-            <th>Description</th>
-            <th>Date and Time</th>
-            <th>Severity Level</th>
-            <th>Image</th>
-            <th className="text-center">Actions</th>
-          </tr>
-        </thead>
-        <tbody>
-          {disasters.map((disaster) => (
-            <tr key={disaster._id}>
-              <td>
-                {editingId === disaster._id ? (
-                  <input
-                    type="text"
-                    name="type"
-                    value={editedData.type || ''}
-                    onChange={(e) => handleInputChange('type', e.target.value)}
-                  />
-                ) : (
-                  disaster.type
-                )}
-              </td>
-              <td>
-                {editingId === disaster._id ? (
-                  <input
-                    type="text"
-                    name="location"
-                    value={editedData.location || ''}
-                    onChange={(e) => handleInputChange('location', e.target.value)}
-                  />
-                ) : (
-                  disaster.location
-                )}
-              </td>
-              <td>
-                {editingId === disaster._id ? (
-                  <textarea
-                    name="description"
-                    value={editedData.description || ''}
-                    onChange={(e) => handleInputChange('description', e.target.value)}
-                  />
-                ) : (
-                  disaster.description
-                )}
-              </td>
-              <td>
-                {editingId === disaster._id ? (
-                  <input
-                    type="datetime-local"
-                    name="dateAndTime"
-                    value={editedData.dateAndTime || ''}
-                    onChange={(e) => handleInputChange('dateAndTime', e.target.value)}
-                    className="custom-datetime-input" // Add your custom class
-                  />
-                ) : (
-                  formatDate(disaster.dateAndTime)
-                )}
-              </td>
-              <td>
-                {editingId === disaster._id ? (
-                  <select
-                    value={editedData.severityLevel || ''}
-                    onChange={(e) => handleInputChange('severityLevel', e.target.value)}
-                  >
-                    <option value="Low">Low</option>
-                    <option value="Medium">Medium</option>
-                    <option value="High">High</option>
-                  </select>
-                ) : (
-                  disaster.severityLevel
-                )}
-              </td>
-              <td>
-                {editingId === disaster._id ? (
-                  <>
-                    <label>
-                      Select Image:
-                      <input
-                        type="file"
-                        accept="image/*"
-                        name="image"
-                        onChange={handleImageChange}
-                      />
-                    </label>
-                    {inputField.image && (
-                      <img
-                        src={URL.createObjectURL(inputField.image)}
-                        alt="Selected"
-                        style={{ maxWidth: '100px', maxHeight: '100px' }}
-                      />
-                    )}
-                  </>
-                ) : (
-                  disaster.image && (
-                    <img
-                      src={`http://localhost:5500/assets/${disaster.image}`}
-                      alt={disaster.type}
-                      className="img-fluid"
-                    />
-                  )
-                )}
-              </td>
-              <td className="text-center">
-                <div className="btn-group">
+      <Header />
+
+      <div className="container mt-5">
+        <h2 className="text-center mb-4">Manage Disaster List</h2>
+        <table className="table table-bordered table-hover">
+          <thead className="thead-dark">
+            <tr>
+              <th>Type</th>
+              <th>Location</th>
+              <th>Description</th>
+              <th>Date and Time</th>
+              <th>Severity Level</th>
+              <th>Image</th>
+              <th className="text-center">Actions</th>
+            </tr>
+          </thead>
+          <tbody>
+            {disasters.map((disaster) => (
+              <tr key={disaster._id}>
+                <td>
                   {editingId === disaster._id ? (
-                    <>
-                      <button className="btn btn-outline-success me-md-2" onClick={toggleConfirmation}>
-                        Save
-                      </button>
-                      <button
-                        className="btn btn-outline-secondary me-md-2"
-                        onClick={() => {
-                          setEditingId(null);
-                          setEditedData({});
-                        }}
-                      >
-                        Cancel
-                      </button>
-                    </>
+                    <input
+                      type="text"
+                      name="type"
+                      value={editedData.type || ''}
+                      onChange={(e) => handleInputChange('type', e.target.value)}
+                      className="edit-input" 
+                    />
                   ) : (
-                    <button className="btn btn-outline-primary me-md-2" onClick={() => handleEdit(disaster._id)}>
-                      <BsPencil /> Edit
-                    </button>
+                    disaster.type
                   )}
-                  <button
-                    className="btn btn-outline-danger btn-sm ms-md-2"
-                    onClick={() => handleDelete(disaster._id)}
-                  >
-                    <BsTrash /> Delete
-                  </button>
-                </div>
-                {showConfirmation && (
-                  <div className="mt-2">
-                    <p>Are you sure you want to save changes?</p>
-                    <button className="btn btn-success" onClick={() => handleSave(disaster._id)}>
-                      Confirm Save
+                </td>
+                <td>
+                  {editingId === disaster._id ? (
+                    <input
+                      type="text"
+                      name="location"
+                      value={editedData.location || ''}
+                      onChange={(e) => handleInputChange('location', e.target.value)}
+                      className="edit-input" 
+                    />
+                  ) : (
+                    disaster.location
+                  )}
+                </td>
+                <td className="custom-grid-column">
+                  {editingId === disaster._id ? (
+                    <textarea
+                      name="description"
+                      value={editedData.description || ''}
+                      onChange={(e) => handleInputChange('description', e.target.value)}
+                      style={{ height: '100px', overflowY: 'auto' }}
+                      className="edit-input" 
+                    />
+                  ) : (
+                    <div className="textarea-wrap">{disaster.description}</div>
+                  )}
+                </td>
+                <td>
+  {editingId === disaster._id ? (
+    <input
+      type="datetime-local"
+      name="dateAndTime"
+      value={editedData.dateAndTime || formatDateForInput(disaster.dateAndTime)}
+      onChange={(e) => handleInputChange('dateAndTime', e.target.value)}
+      className="custom-datetime-input mt-2 edit-input"
+      
+    />
+  ) : (
+    <div onClick={() => handleEdit(disaster._id)}>
+      {formatDate(disaster.dateAndTime)}
+    </div>
+  )}
+</td>
+
+                <td>
+                  {editingId === disaster._id ? (
+                    <select
+                      value={editedData.severityLevel || ''}
+                      onChange={(e) => handleInputChange('severityLevel', e.target.value)}
+                      className="edit-input" 
+                    >
+                      <option value="Low">Low</option>
+                      <option value="Medium">Medium</option>
+                      <option value="High">High</option>
+                    </select>
+                    
+                  ) : (
+                    disaster.severityLevel
+                  )}
+                </td>
+                <td>
+  {editingId === disaster._id ? (
+    <>
+      <div className="image-upload-container">
+
+      <label className="custom-file-input">
+        Choose a different Image:
+        <input
+          type="file"
+          accept="image/*"
+          name="image"
+          onChange={handleImageChange}
+           className="edit-input" 
+        />
+      </label>
+      </div>
+      {editedData.image ? (
+        <img
+          src={editedData.image instanceof File ? URL.createObjectURL(editedData.image) : `http://localhost:5500/assets/${editedData.image}`}
+          alt="Selected"
+          style={{ maxWidth: '100px', maxHeight: '100px' }}
+        />
+      ) : (
+        <img
+          src={`http://localhost:5500/assets/${disaster.image}`}
+          alt="Existing"
+          style={{ maxWidth: '100px', maxHeight: '100px' }}
+        />
+      )}
+      {/* Display image name instead of "No file chosen" */}
+      {editedData.image ? (
+        <p>{editedData.image.name}</p>
+      ) : null}
+    </>
+  ) : (
+    <img
+      src={`http://localhost:5500/assets/${disaster.image}`}
+      alt={disaster.type}
+      className="img-fluid"
+    />
+  )}
+</td>
+
+
+                <td className="text-center">
+                  <div className="btn-group">
+                    {editingId === disaster._id ? (
+                      <>
+                        <button className="btn btn-outline-success me-md-2" onClick={toggleConfirmation}>
+                          Save
+                        </button>
+                        <button
+                          className="btn btn-outline-secondary me-md-2"
+                          onClick={() => {
+                            setEditingId(null);
+                            setEditedData({});
+                          }}
+                        >
+                          Cancel
+                        </button>
+                      </>
+                    ) : (
+                      <button className="btn btn-outline-primary me-md-2" onClick={() => handleEdit(disaster._id)}>
+                        <BsPencil /> Edit
+                      </button>
+                    )}
+                    <button
+                      className="btn btn-outline-danger btn-sm ms-md-2"
+                      onClick={() => handleDelete(disaster._id)}
+                    >
+                      <BsTrash /> Delete
                     </button>
                   </div>
-                )}
-              </td>
-            </tr>
-          ))}
-        </tbody>
-      </table>
-   
-    </div>
-    <Footer />
+                  {showConfirmation && (
+                    <div className="mt-2">
+                      <p>Are you sure you want to save changes?</p>
+                      <button className="btn btn-success" onClick={() => handleSave(disaster._id)}>
+                        Confirm Save
+                      </button>
+                    </div>
+                  )}
+                </td>
+              </tr>
+            ))}
+          </tbody>
+        </table>
+      </div>
+      <Footer />
     </div>
   );
 };

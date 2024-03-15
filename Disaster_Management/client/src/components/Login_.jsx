@@ -18,21 +18,29 @@ export default function Login() {
 
     const loginUser = async (e) => {
         e.preventDefault();
-
+    
         // Validation logic
         const validationErrors = validateForm(data);
         if (Object.keys(validationErrors).length > 0) {
             setErrors(validationErrors);
             return;
         }
-
+    
         try {
-            const { data: responseData } = await axios.post('http://localhost:5500/login', data);
-
+            // Make the POST request to the backend
+            const response = await axios.post('http://localhost:5500/login', data, {
+                withCredentials: true,
+            });
+    
+            // Access the response data
+            const responseData = response.data;
+    
+            console.log(responseData);
+    
             if (responseData.error) {
                 // Clear previous errors
                 setErrors({});
-
+    
                 // Handle different server-side errors
                 if (responseData.error === 'No user found') {
                     setErrors({ email: 'User not found', password: '' });
@@ -52,6 +60,7 @@ export default function Login() {
             console.log(error);
         }
     };
+    
     const isValidEmail = (email) => {
         // Simple email validation regex, you might want to use a more robust solution
         const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
