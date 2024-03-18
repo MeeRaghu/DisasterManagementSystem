@@ -1,0 +1,42 @@
+// Login.scss
+#login-container {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    min-height: 60vh; /* This ensures the container takes at least the full height of the viewport */
+   
+
+
+    .form-container {
+    max-width: 400px; /* Adjust the max-width as needed */
+    width: 100%;
+    padding: 20px;
+    background-color: #ffffff; /* Adjust background color as needed */
+    border-radius: 8px;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+    }
+
+    .mb-3 {
+        margin-bottom: 15px;
+    }
+
+    .form-label {
+        margin-bottom: 8px;
+    }
+
+    .btn-login {
+        background-color: #007bff;
+        border: none;
+    }
+    
+}
+
+body {
+    background: url('../../public/assets/cloud.png') center center fixed;
+    background-size: cover;
+    color: black;
+}
+.login-footer{
+    margin-top: 200px;
+}
