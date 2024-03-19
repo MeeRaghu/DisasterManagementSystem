@@ -37,22 +37,24 @@ const ResourceDetail = () => {
   return (
     <div className="container mt-5">
       <h2 className="text-center">Resource Detail</h2>
-      {resources.map((resource, index) => (
-        <div key={index} className="card mt-3">
-          <div className="card-body">
-            <h5 className="card-title">{resource.type}</h5>
-            <p className="card-text"><strong>Description:</strong> {resource.description}</p>
-            <p className="card-text"><strong>Availability:</strong> {resource.availability}</p>
-            <p className="card-text"><strong>Quantity:</strong> {resource.quantity}</p>
-            <button className="btn btn-primary mr-2" onClick={handleEdit}>Edit</button>
-            <button className="btn btn-danger" onClick={handleDelete}>Delete</button>
+      <div className="row">
+        {resources.map((resource, index) => (
+          <div key={index} className="col-md-6">
+            <div className="card mt-3">
+              <div className="card-body">
+                <h5 className="card-title">{resource.type}</h5>
+                <p className="card-text"><strong>Description:</strong> {resource.description}</p>
+                <p className="card-text"><strong>Availability:</strong> {resource.availability}</p>
+                <p className="card-text"><strong>Quantity:</strong> {resource.quantity}</p>
+                <button className="btn btn-primary mr-2" onClick={handleEdit}>Edit</button>
+                <button className="btn btn-danger" onClick={handleDelete}>Delete</button>
+              </div>
+            </div>
           </div>
-        </div>
-      ))}
+        ))}
+      </div>
     </div>
   );
 };
 
 export default ResourceDetail;
-
-
