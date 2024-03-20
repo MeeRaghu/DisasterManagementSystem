@@ -126,13 +126,31 @@ const logoutUser = (req, res) => {
         res.status(500).json({ error: 'Internal server error' });
     }
 };
-
+const getUserDataFromLocation = async (req, res, next) => {
+    try{
+        const location = req.body.location
+        const usersData = await User.findAll({ city: location });
+        if (usersData) {
+            return res.json({
+                success: true,
+                data: usersData
+            });
+        }
+    }
+    catch(e){
+        return response.json({
+            success: false,
+            message: 'Failed to load the data'
+        })
+    }
+}
 module.exports = {
     test,
     registerUser,
     loginUser,
     getProfile,
-    logoutUser, 
+    logoutUser,
+    getUserDataFromLocation 
 };
 
 
