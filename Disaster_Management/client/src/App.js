@@ -8,6 +8,8 @@ import Home from './components/Home';
 import Register from './components/Register';
 import Login from './components/Login_';
 import DisasterList from './components/DisasterList';
+import ResourceDetails from './components/ResourceDetails';
+import ForgotPassword from './components/ForgotPassword';
 
 
 //import Footer from './Footer';
@@ -23,6 +25,9 @@ function App() {
         <Route path="/Login" element={<Login />} />
         <Route path="/Register" element={<Register />} />
         <Route path="/disasterList" element={<DisasterList />} />
+        <Route path="/resourceDetails" element={<ResourceDetails />} />
+        <Route path="/forgotPassword" element={<ForgotPassword />} />
+
       </Routes>
     </Router>
   );

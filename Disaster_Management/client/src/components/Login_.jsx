@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import axios from "axios";
 import { toast } from 'react-hot-toast';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, Link } from 'react-router-dom';
 import Header from '../components/Header';
 import Footer from '../components/Footer';
 import '../styles/Login.scss';
@@ -66,6 +66,7 @@ export default function Login() {
         const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
         return emailRegex.test(email);
     };
+
     const validateForm = (formData) => {
         const errors = {};
 
@@ -90,6 +91,11 @@ export default function Login() {
             password: '',
         });
         setErrors({});
+    };
+
+    const handleForgotPassword = () => {
+        // Send user to forgot password page
+        navigate('/forgotPassword');
     };
 
     return (
@@ -126,6 +132,9 @@ export default function Login() {
                         <div className="d-grid gap-2 d-md-flex justify-content-md-center">
                             <button type='submit' className="btn btn-primary me-md-2">Login</button>
                             <button type='button' className="btn btn-secondary ms-md-2" onClick={resetForm}>Reset</button>
+                        </div>
+                        <div className="mt-3 text-center">
+                            <Link to="/forgotPassword" onClick={handleForgotPassword}>Forgot Password?</Link>
                         </div>
                     </form>
                 </div>
