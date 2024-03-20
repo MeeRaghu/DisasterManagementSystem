@@ -5,40 +5,36 @@ const nodemailer = require("nodemailer");
 exports.submitDisaster = async (req, res) => {
     try {
         const { type, location, description, dateAndTime, severityLevel } = req.body;
+        console.log("Request Body:", req.body);
+
         const imageNew = req.file ? req.file.filename : null;
         const usersData = await User.find({ city: location }, "email");
-        if(usersData.length > 0) {
+        console.log("User Data:", usersData);
+
+        if (usersData.length === 0) {
+            console.log("No users found for the specified location");
+           
+        } else {
             const emailData = usersData.map((user) => user.email);
-      
-            const transporter = nodemailer.createTransport({
-              host: "sandbox.smtp.mailtrap.io",
-              port: 2525,
-              secure: false,
-              auth: {
-                user: "31b3150ee4c878",
-                pass: "fed24fb0e50aae",
-              },
-              tls: {
-                  ciphers: "SSLv3",
-                },
-            });
-      
-            // Assuming req.body contains the necessary data for the email (e.g., recipients, subject, text)
-            const mailOptions = {
-              from: "adef07255@gmail.com",
-              subject: "Disaster Alert",
-              text: "There is a disaster alert in your location. Take necessary precautions.",
-              to: emailData.join(", "),
+       const transporter = nodemailer.createTransport({
+            service: 'Gmail', 
+            auth: {
+                user: 'adef07255@gmail.com', 
+                pass: 'gvejzmyacwbbnvmu',
+            },
+        });
+
+        const mailOptions = {
+            from: 'adef07255@gmail.com',
+        
+                subject: "Disaster Alert",
+                text: "There is a disaster alert in your location. Take necessary precautions.",
+                to: emailData.join(", "),
             };
       
-            await transporter.sendMail(mailOptions, (error, info) => {
-              if (error) {
-                console.error("Error sending email:", error);
-              } else {
-                console.log("Email sent:", info.response);
-              }
-            });
-          }
+            await transporter.sendMail(mailOptions);
+            console.log("Email sent successfully");
+        }
 
         const newDisaster = new Disaster({
             type,
@@ -58,6 +54,7 @@ exports.submitDisaster = async (req, res) => {
         res.status(400).json('Error: ' + error.message);
     }
 };
+
 
 exports.getDisasters = async (req, res) => {
     try {

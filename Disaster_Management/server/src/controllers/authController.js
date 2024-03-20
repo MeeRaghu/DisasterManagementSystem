@@ -1,6 +1,8 @@
 const User = require('../models/user');
 const { hashPassword, comparePassword } = require('../helpers/auth');
 const jwt = require('jsonwebtoken');
+const nodemailer = require('nodemailer');
+
 
 const test = (req, res) => {
     res.json('test is working');
@@ -144,13 +146,73 @@ const getUserDataFromLocation = async (req, res, next) => {
         })
     }
 }
+const forgotPassword = async (req, res) => {
+    try {
+        const { email } = req.body;
+        // Check if user exists
+        const user = await User.findOne({ email });
+        if (!user) {
+            return res.json({
+                error: 'No user found with this email',
+            });
+        }
+
+        // Generate reset token
+        const resetToken = jwt.sign({ email: user.email }, process.env.JWT_SECRET, { expiresIn: '1h' });
+
+        // Send reset password link to user's email
+        const resetLink = `${process.env.CLIENT_URL}/resetPassword?token=${resetToken}`;
+
+        // Nodemailer configuration
+        const transporter = nodemailer.createTransport({
+            service: 'Gmail', 
+            auth: {
+                user: 'adef07255@gmail.com', 
+                pass: 'gvejzmyacwbbnvmu', 
+            },
+        });
+
+        const mailOptions = {
+            from: 'adef07255@gmail.com',
+            to: email,
+            subject: 'Password Reset Request',
+            html: `
+                <p>Hello,</p>
+                <p>You have requested to reset your password. Please click the link below to reset your password:</p>
+                <a href="${resetLink}">Reset Password</a>
+                <p>If you didn't request this, please ignore this email.</p>
+            `,
+        };
+
+        transporter.sendMail(mailOptions, async (error, info) => {
+            try {
+                if (error) {
+                    console.error("Error sending email:", error);
+                    throw new Error(error); // Throw an error to capture it in the catch block
+                } else {
+                    console.log("Email sent:", info.response);
+                    res.json({ message: 'Password reset link sent to your email' });
+                }
+            } catch (error) {
+                console.error("Error sending email:", error);
+                res.status(500).json({ error: 'Internal server error' });
+            }
+        });
+    } catch (error) {
+        console.error(error);
+        res.status(500).json({ error: 'Internal server error' });
+    }
+};
+
+
 module.exports = {
     test,
     registerUser,
     loginUser,
     getProfile,
     logoutUser,
-    getUserDataFromLocation 
+    getUserDataFromLocation ,
+    forgotPassword
 };
 
 
