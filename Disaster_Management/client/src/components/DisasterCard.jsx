@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
+import { Link } from 'react-router-dom'; // Import Link from react-router-dom
 import Slider from 'react-slick';
 import 'slick-carousel/slick/slick.css';
 import 'slick-carousel/slick/slick-theme.css';
@@ -39,26 +40,28 @@ const DisasterCard = () => {
   return (
     <div>
       <Header />
-    <div>
-      <h2>Disaster Cards</h2>
-      <Slider {...settings}>
-        {disasters.map((disaster) => (
-          <div key={disaster._id} className="disaster-card">
-            <div className="card-content">
-              <p>{disaster.type}</p>
-              <p>Location: {disaster.location}</p>
-              <p>Description: {disaster.description}</p>
-              <p>Date and Time: {disaster.dateAndTime}</p>
-              <p>Severity Level: {disaster.severityLevel}</p>
+      <div>
+        <h2>Disaster Cards</h2>
+        <Slider {...settings}>
+          {disasters.map((disaster) => (
+            <div key={disaster._id} className="disaster-card">
+              <div className="card-content">
+                <p>{disaster.type}</p>
+                <p>Location: {disaster.location}</p>
+                <p>Description: {disaster.description}</p>
+                <p>Date and Time: {disaster.dateAndTime}</p>
+                <p>Severity Level: {disaster.severityLevel}</p>
+              </div>
+              {disaster.image && <img src={`http://localhost:5500/assets/${disaster.image}`} alt="Disaster" className="card-image" />}
+              <hr />
+              <Link to="/add-resource"> 
+                <button className="add-resource-button">Add Resource</button>
+              </Link>
             </div>
-            {disaster.image && <img src={`http://localhost:5500/assets/${disaster.image}`} alt="Disaster" className="card-image" />}
-            <hr />
-            <button className="add-resource-button">Add Resource</button>
-          </div>
-        ))}
-      </Slider>
-    </div>
-    <Footer />
+          ))}
+        </Slider>
+      </div>
+      <Footer />
     </div>
   );
 };
