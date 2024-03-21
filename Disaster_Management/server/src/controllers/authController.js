@@ -146,7 +146,9 @@ const getUserDataFromLocation = async (req, res, next) => {
         })
     }
 }
+
 const forgotPassword = async (req, res) => {
+    
     try {
         const { email } = req.body;
         // Check if user exists
@@ -161,7 +163,7 @@ const forgotPassword = async (req, res) => {
         const resetToken = jwt.sign({ email: user.email }, process.env.JWT_SECRET, { expiresIn: '1h' });
 
         // Send reset password link to user's email
-        const resetLink = `${process.env.CLIENT_URL}/resetPassword?token=${resetToken}`;
+        const resetLink = `http://localhost:3000/resetPassword?token=${resetToken}`;
 
         // Nodemailer configuration
         const transporter = nodemailer.createTransport({
@@ -203,6 +205,41 @@ const forgotPassword = async (req, res) => {
         res.status(500).json({ error: 'Internal server error' });
     }
 };
+const resetPassword = async (req, res) => {
+    try {
+        const { token, password } = req.body;
+
+        if (!token) {
+            return res.status(400).json({ error: 'Token is required' });
+        }
+
+        // Verify the reset token
+        const decodedToken = jwt.verify(token, process.env.JWT_SECRET);
+
+        // Check if the token is valid
+        if (!decodedToken) {
+            return res.status(400).json({ error: 'Invalid or expired token' });
+        }
+
+        // Find the user by email
+        const user = await User.findOne({ email: decodedToken.email });
+
+        // Check if the user exists
+        if (!user) {
+            return res.status(404).json({ error: 'User not found' });
+        }
+
+        // Update the user's password
+        user.password = await hashPassword(password);
+        await user.save();
+
+        // Respond with a success message
+        res.json({ message: 'Password reset successfully' });
+    } catch (error) {
+        console.error(error);
+        res.status(500).json({ error: 'Internal server error' });
+    }
+};
 
 
 module.exports = {
@@ -212,7 +249,8 @@ module.exports = {
     getProfile,
     logoutUser,
     getUserDataFromLocation ,
-    forgotPassword
+    forgotPassword,
+    resetPassword
 };
 
 
