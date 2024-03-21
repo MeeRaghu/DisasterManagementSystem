@@ -5,6 +5,7 @@ import { toast } from 'react-hot-toast';
 const ForgotPassword = () => {
     const [email, setEmail] = useState('');
     const [loading, setLoading] = useState(false);
+    const [resetLinkSent, setResetLinkSent] = useState(false); // State to track whether the reset link is sent
 
     const handleResetPassword = async (e) => {
         e.preventDefault();
@@ -15,10 +16,12 @@ const ForgotPassword = () => {
             const response = await axios.post('http://localhost:5500/forgotPassword', { email });
             console.log("my email",response.data,email);
             
-            // Display success message if email sent successfully
+          
             toast.success(response.data.message);
+            // Set resetLinkSent to true to display the message
+            setResetLinkSent(true);
         } catch (error) {
-            // Display error message if something goes wrong
+            
             toast.error('Failed to send password reset link. Please try again later.');
             console.error(error);
         }
@@ -33,6 +36,12 @@ const ForgotPassword = () => {
                     <div className="card">
                         <div className="card-body">
                             <h2 className="text-center mb-4">Forgot Password</h2>
+                            {/* Display reset link sent message if resetLinkSent is true */}
+                            {resetLinkSent && (
+                                <div className="alert alert-success" role="alert">
+                                    Password reset link has been sent to your email.
+                                </div>
+                            )}
                             <form onSubmit={handleResetPassword}>
                                 <div className="mb-3">
                                     <label htmlFor="email" className="form-label">Email:</label>
