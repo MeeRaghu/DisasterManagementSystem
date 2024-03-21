@@ -4,7 +4,7 @@ const disasterController = require('../../src/controllers/disasterController.js'
 const weatherController = require('../../src/controllers/weatherController.js');
 const router=express.Router();
 const cors=require('cors')
-const {test,registerUser,loginUser,getProfile, logoutUser, forgotPassword}=require('../controllers/authController')
+const {test,registerUser,loginUser,getProfile, logoutUser, forgotPassword,resetPassword}=require('../controllers/authController')
 
 
 router.post('/register',registerUser);
@@ -12,6 +12,7 @@ router.post('/login',loginUser);
 router.get('/profile',getProfile);
 router.post('/logout',logoutUser);
 router.post('/forgotPassword',forgotPassword);
+router.post('/resetPassword',resetPassword);
 
 
 

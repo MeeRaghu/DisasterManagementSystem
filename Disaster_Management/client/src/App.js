@@ -11,6 +11,8 @@ import DisasterList from './components/DisasterList';
 import AddResource from './components/AddResource';
 import ResourceDetails from './components/ResourceDetails';
 import ForgotPassword from './components/ForgotPassword';
+import ResetPassword from './components/ResetPassword'; 
+
 
 
 
@@ -30,7 +32,7 @@ function App() {
         <Route path="/AddResource" element={<AddResource />} />
         <Route path="/resourceDetails" element={<ResourceDetails />} />
         <Route path="/forgotPassword" element={<ForgotPassword />} />
-
+        <Route path="/resetPassword" element={<ResetPassword />}/>
       </Routes>
     </Router>
   );
