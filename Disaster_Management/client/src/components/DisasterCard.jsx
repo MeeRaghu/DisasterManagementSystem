@@ -41,26 +41,27 @@ const DisasterCard = () => {
     <div>
       <Header />
       <div>
-        <h2>Disaster Cards</h2>
+        <h2 style={{ fontWeight: 'bold' }}>Disaster Cards</h2>
         <Slider {...settings}>
           {disasters.map((disaster) => (
             <div key={disaster._id} className="disaster-card">
+              <Link to="/addResource" style={{ float:"right" }}> 
+                <button className="add-resource-button">Add Resource</button>
+              </Link>
               <div className="card-content">
-                <p>{disaster.type}</p>
-                <p>Location: {disaster.location}</p>
-                <p>Description: {disaster.description}</p>
-                <p>Date and Time: {disaster.dateAndTime}</p>
-                <p>Severity Level: {disaster.severityLevel}</p>
+                <p><strong>{disaster.type}</strong></p>
+                <p><strong>Location:</strong> {disaster.location}</p>
+                <p><strong>Description:</strong> {disaster.description}</p>
+                <p><strong>Date and Time:</strong> {disaster.dateAndTime}</p>
+                <p><strong>Severity Level:</strong> {disaster.severityLevel}</p>
               </div>
               {disaster.image && <img src={`http://localhost:5500/assets/${disaster.image}`} alt="Disaster" className="card-image" />}
               <hr />
-              <Link to="/add-resource"> 
-                <button className="add-resource-button">Add Resource</button>
-              </Link>
             </div>
           ))}
         </Slider>
       </div>
+      <div></div>
       <Footer />
     </div>
   );
