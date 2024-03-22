@@ -2,6 +2,14 @@ const User = require('../models/user');
 const { hashPassword, comparePassword } = require('../helpers/auth');
 const jwt = require('jsonwebtoken');
 const nodemailer = require('nodemailer');
+const Redis = require("ioredis");
+const redisClient = new Redis();
+
+redisClient.on("error", function(error) {
+    console.error("Error connecting to Redis:", error);
+});
+
+
 
 
 const test = (req, res) => {
@@ -66,11 +74,34 @@ const registerUser = async (req, res) => {
 
 
 // Login Endpoint
+// Login Endpoint
 const loginUser = async (req, res) => {
     try {
         const { email, password } = req.body;
 
-        // Check if user exists
+        // Check if user exists in cache
+        const cachedUser = await redisClient.get(email);
+        if (cachedUser) {
+            // User found in cache, return cached user
+            const parsedUser = JSON.parse(cachedUser);
+            console.log("cache verify",parsedUser);
+            const match = await comparePassword(password, parsedUser.password);
+            if (match) {
+                jwt.sign({ email: parsedUser.email, id: parsedUser._id, name: parsedUser.name }, process.env.JWT_SECRET, {}, (err, token) => {
+                    if (err) throw err;
+                    // Set user token in cache
+                    redisClient.set(token, JSON.stringify(parsedUser));
+                    res.cookie('token', token).json(parsedUser);
+                });
+            } else {
+                res.json({
+                    error: 'Password does not match',
+                });
+            }
+            return; // Exit the function since user data is already retrieved from cache
+        }
+
+        // User not found in cache, proceed with database lookup
         const user = await User.findOne({ email });
         if (!user) {
             return res.json({
@@ -83,25 +114,35 @@ const loginUser = async (req, res) => {
         if (match) {
             jwt.sign({ email: user.email, id: user._id, name: user.name }, process.env.JWT_SECRET, {}, (err, token) => {
                 if (err) throw err;
+                // Set user token and user data in cache
+                redisClient.set(email, JSON.stringify(user));
+                redisClient.set(token, JSON.stringify(user));
                 res.cookie('token', token).json(user);
             });
-        }
-
-        if (!match) {
+        } else {
             res.json({
                 error: 'Password does not match',
             });
         }
     } catch (error) {
         console.log(error);
+        res.status(500).json({ error: 'Internal server error' });
     }
 };
 
+// Get Profile Endpoint
 const getProfile = async (req, res) => {
     try {
         const { token } = req.cookies;
         if (!token) {
             return res.json(null);
+        }
+
+        // Check if profile exists in cache
+        const cachedProfile = await redisClient.get(token);
+        if (cachedProfile) {
+            // Profile found in cache, return cached profile
+            return res.json(JSON.parse(cachedProfile));
         }
 
         const user = await jwt.verify(token, process.env.JWT_SECRET);
@@ -112,12 +153,16 @@ const getProfile = async (req, res) => {
         }
 
         const { name, email, isAdmin } = userData;
+        // Set profile in cache
+        redisClient.set(token, JSON.stringify({ name, email, isAdmin }));
         res.json({ name, email, isAdmin });
     } catch (error) {
         console.error('Error fetching profile:', error);
         res.status(500).json({ error: 'Internal server error' });
     }
 };
+
+
 const logoutUser = (req, res) => {
     try {
         // Clear the token cookie
