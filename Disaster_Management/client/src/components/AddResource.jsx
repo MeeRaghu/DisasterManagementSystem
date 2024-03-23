@@ -41,7 +41,7 @@ const AddResourceForm = () => {
   return (
     <div>
       <Header />
-      <Container className="my-5 py-4"> {/* Adjusted padding */}
+      <Container className="my-5 py-4"> 
         <Row className="justify-content-center">
           <Col md={6}>
             <h2 className="text-center mb-4">Add Resources</h2>
