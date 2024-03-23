@@ -51,9 +51,6 @@ const DisasterCard = () => {
         <Slider {...settings}>
           {disasters.map((disaster) => (
             <div key={disaster._id} className="disaster-card">
-              <Link to="/addResource" style={{ float:"right" }}> 
-                <button className="add-resource-button">Add Resource</button>
-              </Link>
               {/* Pass disasterId to handleAddResourceClick */}
               <button onClick={() => handleAddResourceClick(disaster._id)} className="add-resource-button">Add Resource</button>
               <div className="card-content">
