@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
-import { Link } from 'react-router-dom'; // Import Link from react-router-dom
+import { Link, useHistory } from 'react-router-dom'; // Import useHistory
 import Slider from 'react-slick';
 import 'slick-carousel/slick/slick.css';
 import 'slick-carousel/slick/slick-theme.css';
@@ -10,6 +10,7 @@ import Footer from '../components/Footer';
 
 const DisasterCard = () => {
   const [disasters, setDisasters] = useState([]);
+  const history = useHistory(); // Initialize useHistory
 
   useEffect(() => {
     const fetchAndSortDisasters = async () => {
@@ -27,7 +28,12 @@ const DisasterCard = () => {
     };
 
     fetchAndSortDisasters();
-  }, []); // Empty dependency array, runs once on mount
+  }, []);
+
+  const handleAddResourceClick = (disasterId) => {
+    // Navigate to '/addResource' page and pass disasterId as state
+    history.push('/addResource', { disasterId });
+  };
 
   const settings = {
     dots: true,
@@ -41,26 +47,26 @@ const DisasterCard = () => {
     <div>
       <Header />
       <div>
-        <h2>Disaster Cards</h2>
+        <h2 style={{ fontWeight: 'bold' }}>Disaster Cards</h2>
         <Slider {...settings}>
           {disasters.map((disaster) => (
             <div key={disaster._id} className="disaster-card">
+              {/* Pass disasterId to handleAddResourceClick */}
+              <button onClick={() => handleAddResourceClick(disaster._id)} className="add-resource-button">Add Resource</button>
               <div className="card-content">
-                <p>{disaster.type}</p>
-                <p>Location: {disaster.location}</p>
-                <p>Description: {disaster.description}</p>
-                <p>Date and Time: {disaster.dateAndTime}</p>
-                <p>Severity Level: {disaster.severityLevel}</p>
+                <p><strong>{disaster.type}</strong></p>
+                <p><strong>Location:</strong> {disaster.location}</p>
+                <p><strong>Description:</strong> {disaster.description}</p>
+                <p><strong>Date and Time:</strong> {disaster.dateAndTime}</p>
+                <p><strong>Severity Level:</strong> {disaster.severityLevel}</p>
               </div>
               {disaster.image && <img src={`http://localhost:5500/assets/${disaster.image}`} alt="Disaster" className="card-image" />}
               <hr />
-              <Link to="/add-resource"> 
-                <button className="add-resource-button">Add Resource</button>
-              </Link>
             </div>
           ))}
         </Slider>
       </div>
+      <div></div>
       <Footer />
     </div>
   );
