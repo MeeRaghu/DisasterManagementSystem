@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
-import { Link, useHistory } from 'react-router-dom'; // Import useHistory
+import { useNavigate } from 'react-router-dom'; 
 import Slider from 'react-slick';
 import 'slick-carousel/slick/slick.css';
 import 'slick-carousel/slick/slick-theme.css';
@@ -10,7 +10,7 @@ import Footer from '../components/Footer';
 
 const DisasterCard = () => {
   const [disasters, setDisasters] = useState([]);
-  const history = useHistory(); // Initialize useHistory
+  const navigate = useNavigate();
 
   useEffect(() => {
     const fetchAndSortDisasters = async () => {
@@ -32,7 +32,7 @@ const DisasterCard = () => {
 
   const handleAddResourceClick = (disasterId) => {
     // Navigate to '/addResource' page and pass disasterId as state
-    history.push('/addResource', { disasterId });
+    navigate('/addResource', { state: { disasterId } });
   };
 
   const settings = {
@@ -73,3 +73,5 @@ const DisasterCard = () => {
 };
 
 export default DisasterCard;
+
+
