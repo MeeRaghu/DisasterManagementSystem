@@ -1,5 +1,9 @@
 import React, { useState } from 'react';
 import { Form, Button, Container, Row, Col } from 'react-bootstrap';
+import Header from '../components/Header'; 
+import Footer from '../components/Footer';
+import '../styles/styles.scss';
+
 
 const AddResourceForm = () => {
   const [resourceType, setResourceType] = useState('');
@@ -35,46 +39,52 @@ const AddResourceForm = () => {
   };
 
   return (
-    <Container>
-      <Row className="justify-content-center">
-        <Col md={6}>
-          <h2 className="mb-4">Add Resources</h2>
-          <Form onSubmit={handleSubmit}>
-            <Form.Group controlId="resourceType">
-              <Form.Label>Resource Type *</Form.Label>
-              <Form.Control type="text" name="resourceType" value={resourceType} onChange={handleChange} isInvalid={!!errors.resourceType} />
-              <Form.Control.Feedback type="invalid">{errors.resourceType}</Form.Control.Feedback>
-            </Form.Group>
+    <div>
+      <Header />
+      <Container className="my-5 py-4"> {/* Adjusted padding */}
+        <Row className="justify-content-center">
+          <Col md={6}>
+            <h2 className="text-center mb-4">Add Resources</h2>
+            <Form onSubmit={handleSubmit}>
+              <Form.Group controlId="resourceType">
+                <Form.Label>Resource Type *</Form.Label>
+                <Form.Control type="text" name="resourceType" value={resourceType} onChange={handleChange} isInvalid={!!errors.resourceType} />
+                <Form.Control.Feedback type="invalid">{errors.resourceType}</Form.Control.Feedback>
+              </Form.Group>
 
-            <Form.Group controlId="quantity">
-              <Form.Label>Quantity *</Form.Label>
-              <Form.Control type="text" name="quantity" value={quantity} onChange={handleChange} isInvalid={!!errors.quantity} />
-              <Form.Control.Feedback type="invalid">{errors.quantity}</Form.Control.Feedback>
-            </Form.Group>
+              <Form.Group controlId="quantity">
+                <Form.Label>Quantity *</Form.Label>
+                <Form.Control type="text" name="quantity" value={quantity} onChange={handleChange} isInvalid={!!errors.quantity} />
+                <Form.Control.Feedback type="invalid">{errors.quantity}</Form.Control.Feedback>
+              </Form.Group>
 
-            <Form.Group controlId="urgency">
-              <Form.Label>Urgency *</Form.Label>
-              <Form.Control as="select" name="urgency" value={urgency} onChange={handleChange} isInvalid={!!errors.urgency}>
-                <option value="">Select urgency</option>
-                <option value="High">High</option>
-                <option value="Medium">Medium</option>
-                <option value="Low">Low</option>
-              </Form.Control>
-              <Form.Control.Feedback type="invalid">{errors.urgency}</Form.Control.Feedback>
-            </Form.Group>
+              <Form.Group controlId="urgency">
+                <Form.Label>Urgency *</Form.Label>
+                <Form.Control as="select" name="urgency" value={urgency} onChange={handleChange} isInvalid={!!errors.urgency}>
+                  <option value="">Select urgency</option>
+                  <option value="High">High</option>
+                  <option value="Medium">Medium</option>
+                  <option value="Low">Low</option>
+                </Form.Control>
+                <Form.Control.Feedback type="invalid">{errors.urgency}</Form.Control.Feedback>
+              </Form.Group>
 
-            <Form.Group controlId="comments">
-              <Form.Label>Additional Comments</Form.Label>
-              <Form.Control as="textarea" rows={3} name="comments" value={comments} onChange={handleChange} />
-            </Form.Group>
+              <Form.Group controlId="comments">
+                <Form.Label>Additional Comments</Form.Label>
+                <Form.Control as="textarea" rows={8} name="comments" value={comments} onChange={handleChange} /> {/* Adjusted rows */}
+              </Form.Group>
 
-            <Button variant="primary" type="submit">
-              Submit
-            </Button>
-          </Form>
-        </Col>
-      </Row>
-    </Container>
+              <div className="text-center">
+                <Button variant="primary" type="submit">
+                  Submit
+                </Button>
+              </div>
+            </Form>
+          </Col>
+        </Row>
+      </Container>
+      <Footer />
+    </div>
   );
 };
 
