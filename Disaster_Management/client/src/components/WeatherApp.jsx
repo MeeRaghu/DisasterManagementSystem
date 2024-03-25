@@ -13,9 +13,19 @@ const Weather = () => {
   const [showPopup, setShowPopup] = useState(true);
 
   const handleFetchWeather = async () => {
+    if (!city) {
+      setWarning('Please mention the city');
+      setMessage('');
+      return;
+    }
+      
+  setWarning('');
     try {
       const response = await axios.post('http://localhost:5500/getWeather', { city });
       const data = response.data;
+      
+     
+    
   
       if (data.success) {
         setWarning(data.warning);
