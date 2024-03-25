@@ -30,6 +30,12 @@ const DisasterCard = () => {
     fetchAndSortDisasters();
   }, []);
 
+  const formatDateTime = (dateTimeString) => {
+    const options = { month: 'long', day: 'numeric', year: 'numeric', hour: 'numeric', minute: 'numeric', hour12: true };
+    const dateTime = new Date(dateTimeString);
+    return dateTime.toLocaleDateString('en-US', options);
+  };
+
   const handleAddResourceClick = (disasterId) => {
     // Navigate to '/addResource' page and pass disasterId as state
     navigate('/addResource', { state: { disasterId } });
@@ -57,7 +63,7 @@ const DisasterCard = () => {
                 <p><strong>{disaster.type}</strong></p>
                 <p><strong>Location:</strong> {disaster.location}</p>
                 <p><strong>Description:</strong> {disaster.description}</p>
-                <p><strong>Date and Time:</strong> {disaster.dateAndTime}</p>
+                <p><strong>Date and Time:</strong> {formatDateTime(disaster.dateAndTime)}</p>
                 <p><strong>Severity Level:</strong> {disaster.severityLevel}</p>
               </div>
               {disaster.image && <img src={`http://localhost:5500/assets/${disaster.image}`} alt="Disaster" className="card-image" />}
@@ -73,5 +79,3 @@ const DisasterCard = () => {
 };
 
 export default DisasterCard;
-
-
