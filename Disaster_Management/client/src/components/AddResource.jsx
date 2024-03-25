@@ -1,9 +1,10 @@
 import React, { useState } from 'react';
 import { Form, Button, Container, Row, Col } from 'react-bootstrap';
+import { useLocation, useNavigate } from 'react-router-dom';
+import axios from 'axios';
 import Header from '../components/Header'; 
 import Footer from '../components/Footer';
 import '../styles/styles.scss';
-
 
 const AddResourceForm = () => {
   const [resourceType, setResourceType] = useState('');
@@ -11,6 +12,11 @@ const AddResourceForm = () => {
   const [urgency, setUrgency] = useState('');
   const [comments, setComments] = useState('');
   const [errors, setErrors] = useState({});
+  const location = useLocation();
+  const navigate = useNavigate();
+
+  // Extracting disasterId from location state
+  const disasterId = location.state && location.state.disasterId;
 
   const handleChange = (e) => {
     const { name, value } = e.target;
@@ -22,7 +28,7 @@ const AddResourceForm = () => {
 
   const validateForm = () => {
     const errors = {};
-    if (!resourceType.trim()) errors.resourceType = 'Resource Type is required';
+    if (!resourceType) errors.resourceType = 'Resource Type is required';
     if (!quantity.trim()) errors.quantity = 'Quantity is required';
     if (!/^\d+$/.test(quantity)) errors.quantity = 'Quantity must be a number';
     if (!urgency) errors.urgency = 'Urgency is required';
@@ -30,11 +36,23 @@ const AddResourceForm = () => {
     return Object.keys(errors).length === 0;
   };
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
     if (validateForm()) {
-      console.log('Form submitted:', { resourceType, quantity, urgency, comments });
-      // You can add your logic to submit the form data to the backend here
+      try {
+        const response = await axios.post('http://localhost:5500/createResource', {
+          disasterId, // Include disasterId in the POST request
+          resourceType,
+          quantity: parseInt(quantity),
+          urgency,
+          comments
+        });
+        console.log('Resource created:', response.data.resource);
+        // Navigate to resource details page passing resource ID
+        navigate('/resourceDetails', { state: { resourceId: response.data.resource._id } });
+      } catch (error) {
+        console.error('Error creating resource:', error);
+      }
     }
   };
 
@@ -48,7 +66,13 @@ const AddResourceForm = () => {
             <Form onSubmit={handleSubmit}>
               <Form.Group controlId="resourceType">
                 <Form.Label>Resource Type *</Form.Label>
-                <Form.Control type="text" name="resourceType" value={resourceType} onChange={handleChange} isInvalid={!!errors.resourceType} />
+                <Form.Control as="select" name="resourceType" value={resourceType} onChange={handleChange} isInvalid={!!errors.resourceType}>
+                  <option value="">Select resource type</option>
+                  <option value="Food">Food</option>
+                  <option value="First Aid Kit">First Aid Kit</option>
+                  <option value="Water">Water</option>
+                  <option value="Clothes">Clothes</option>
+                </Form.Control>
                 <Form.Control.Feedback type="invalid">{errors.resourceType}</Form.Control.Feedback>
               </Form.Group>
 
@@ -71,7 +95,7 @@ const AddResourceForm = () => {
 
               <Form.Group controlId="comments">
                 <Form.Label>Additional Comments</Form.Label>
-                <Form.Control as="textarea" rows={8} name="comments" value={comments} onChange={handleChange} /> {/* Adjusted rows */}
+                <Form.Control as="textarea" rows={8} name="comments" value={comments} onChange={handleChange} />
               </Form.Group>
 
               <div className="text-center">
