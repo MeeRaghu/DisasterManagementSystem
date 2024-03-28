@@ -4,8 +4,9 @@ const disasterController = require('../../src/controllers/disasterController.js'
 const weatherController = require('../../src/controllers/weatherController.js');
 const router=express.Router();
 const cors=require('cors')
-const {test,registerUser,loginUser,getProfile, logoutUser, forgotPassword,resetPassword}=require('../controllers/authController');
-const {createResource}=require('../controllers/resourceController.js');
+const {test,registerUser,loginUser,getProfile, logoutUser, forgotPassword,resetPassword,getAllUsersByResource}=require('../controllers/authController');
+const {createResource,getResourcesByUserId}=require('../controllers/resourceController.js');
+const {getResourceApprovalData}=require('../controllers/approvalController.js');
 
 
 router.post('/register',registerUser);
@@ -14,9 +15,13 @@ router.get('/profile',getProfile);
 router.post('/logout',logoutUser);
 router.post('/forgotPassword',forgotPassword);
 router.post('/resetPassword',resetPassword);
+router.get('/getAllUsersByResource',getAllUsersByResource);
 
 
 router.post('/createResource',createResource);
+router.get('/getResourcesByUserId/:userId', getResourcesByUserId);
+
+router.get('/resourceApproval',getResourceApprovalData);
 
 
 

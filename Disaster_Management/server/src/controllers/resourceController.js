@@ -8,11 +8,12 @@ const test = (req, res) => {
 // Controller function to create a new resource
 const createResource = async (req, res) => {
     try {
-        const { disasterId,resourceType, quantity, urgency, comments } = req.body;
+        const { disasterId,userId,resourceType, quantity, urgency, comments } = req.body;
 
         // Create resource in the database
         const newResource = await Resource.create({
             disasterId,
+            userId,
             resourceType,
             quantity,
             urgency,
@@ -37,20 +38,21 @@ const getAllResources = async (req, res) => {
     }
 };
 
-// Controller function to fetch a single resource by ID
-const getResourceById = async (req, res) => {
+// Controller function to fetch resources by user ID
+const getResourcesByUserId = async (req, res) => {
     try {
-        const { resourceId } = req.params;
-        const resource = await Resource.findById(resourceId);
-        if (!resource) {
-            return res.status(404).json({ message: 'Resource not found' });
+        const { userId } = req.params;
+        const resources = await Resource.find({ userId });
+        if (!resources || resources.length === 0) {
+            return res.status(404).json({ message: 'No resources found for this user' });
         }
-        res.status(200).json(resource);
+        res.status(200).json(resources);
     } catch (error) {
-        console.error('Error fetching resource by ID:', error);
+        console.error('Error fetching resources by user ID:', error);
         res.status(500).json({ error: 'Internal server error' });
     }
 };
+
 
 // Controller function to update a resource
 const updateResource = async (req, res) => {
@@ -91,7 +93,7 @@ module.exports = {
     test,
     createResource,
     getAllResources,
-    getResourceById,
+    getResourcesByUserId,
     updateResource,
     deleteResource
 };

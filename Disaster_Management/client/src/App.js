@@ -12,6 +12,7 @@ import AddResource from './components/AddResource';
 import ResourceDetails from './components/ResourceDetails';
 import ForgotPassword from './components/ForgotPassword';
 import ResetPassword from './components/ResetPassword'; 
+import ResourceApproval from './components/ResourceApproval';
 
 
 
@@ -33,6 +34,7 @@ function App() {
         <Route path="/resourceDetails" element={<ResourceDetails />} />
         <Route path="/forgotPassword" element={<ForgotPassword />} />
         <Route path="/resetPassword" element={<ResetPassword />}/>
+        <Route path="/resourceApproval" element={<ResourceApproval />}/>
       </Routes>
     </Router>
   );

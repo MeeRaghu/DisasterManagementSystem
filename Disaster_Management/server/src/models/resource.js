@@ -1,6 +1,11 @@
 const mongoose = require('mongoose');
 
 const resourceSchema = new mongoose.Schema({
+  userId: {
+    type: mongoose.Schema.Types.ObjectId,
+    ref: 'User', // Reference to the User model
+    required: true
+  },
   disasterId: {
     type: mongoose.Schema.Types.ObjectId,
     ref: 'Disaster', // Reference to the Disaster model

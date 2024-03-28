@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { Form, Button, Container, Row, Col } from 'react-bootstrap';
 import { useLocation, useNavigate } from 'react-router-dom';
 import axios from 'axios';
@@ -12,8 +12,30 @@ const AddResourceForm = () => {
   const [urgency, setUrgency] = useState('');
   const [comments, setComments] = useState('');
   const [errors, setErrors] = useState({});
+  const [userId, setUserId] = useState(null); // Define userId state variable
   const location = useLocation();
   const navigate = useNavigate();
+
+  useEffect(() => {
+    // Retrieve userId from the token stored in cookies
+    const token = document.cookie.split('; ').find(row => row.startsWith('token='));
+    if (token) {
+      const parsedToken = token.split('=')[1];
+      const decodedToken = parseJwt(parsedToken); // Function to parse JWT token
+      if (decodedToken && decodedToken.id) {
+        setUserId(decodedToken.id);
+      }
+    }
+  }, []);
+
+  // Function to parse JWT token
+  const parseJwt = (token) => {
+    try {
+      return JSON.parse(atob(token.split('.')[1]));
+    } catch (e) {
+      return null;
+    }
+  };
 
   // Extracting disasterId from location state
   const disasterId = location.state && location.state.disasterId;
@@ -41,7 +63,8 @@ const AddResourceForm = () => {
     if (validateForm()) {
       try {
         const response = await axios.post('http://localhost:5500/createResource', {
-          disasterId, // Include disasterId in the POST request
+          disasterId,
+          userId, 
           resourceType,
           quantity: parseInt(quantity),
           urgency,
@@ -49,12 +72,13 @@ const AddResourceForm = () => {
         });
         console.log('Resource created:', response.data.resource);
         // Navigate to resource details page passing resource ID
-        navigate('/resourceDetails', { state: { resourceId: response.data.resource._id } });
+        navigate('/resourceApproval', { state: { resourceId: response.data.resource._id } });
       } catch (error) {
         console.error('Error creating resource:', error);
       }
     }
   };
+
 
   return (
     <div>
