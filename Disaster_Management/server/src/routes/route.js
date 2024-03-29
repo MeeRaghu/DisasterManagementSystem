@@ -5,10 +5,8 @@ const weatherController = require('../../src/controllers/weatherController.js');
 const router=express.Router();
 const cors=require('cors')
 const {test,registerUser,loginUser,getProfile, logoutUser, forgotPassword,resetPassword,getAllUsersByResource}=require('../controllers/authController');
-const {createResource,getResourcesByUserId,setFlagInDB}=require('../controllers/resourceController.js');
+const {createResource,getResourcesByUserId,setFlagInDB,getResources,updateResource,deleteResource}=require('../controllers/resourceController.js');
 const {sendApprovalEmail}=require('../controllers/approvalController.js');
-
-
 router.post('/register',registerUser);
 router.post('/login',loginUser);
 router.get('/profile',getProfile);
@@ -19,11 +17,14 @@ router.get('/getAllUsersByResource',getAllUsersByResource);
 
 
 router.post('/createResource',createResource);
+
+router.get('/resources', getResources); 
+router.get('/resources/:userId', getResourcesByUserId); 
+router.put('/resources/update/:resourceId', updateResource); 
+router.delete('/resources/delete/:resourceId', deleteResource); 
 router.post('/sendApprovalEmail', sendApprovalEmail);
 router.get('/getResourcesByUserId/:userId', getResourcesByUserId);
 router.put('/setFlagInDB/:resourceId',setFlagInDB);
-
-
 
 
 
