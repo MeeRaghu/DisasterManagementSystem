@@ -7,31 +7,26 @@ const test = (req, res) => {
 
 // Controller function to create a new resource
 const createResource = async (req, res) => {
-  try {
-    const { disasterId, resourceType, quantity, urgency, comments, userId } =
-      req.body;
+    try {
+        const { disasterId, userId, resourceType, quantity, urgency, comments } = req.body;
 
-    // Create resource in the database
-    const newResource = await Resource.create({
-      disasterId,
-      resourceType,
-      quantity,
-      urgency,
-      comments,
-      userId,
-    });
-
-    res
-      .status(201)
-      .json({
-        message: "Resource created successfully",
-        resource: newResource,
-      });
-  } catch (error) {
-    console.error("Error creating resource:", error);
-    res.status(500).json({ error: "Internal server error" });
-  }
+        // Create resource in the database with isApproved set to false by default
+        const newResource = await Resource.create({
+            disasterId,
+            userId,
+            resourceType,
+            quantity,
+            urgency,
+            comments,
+            isApproved: false // Set isApproved to false by default
+        });
+         res.status(201).json({ message: 'Resource created successfully', resource: newResource });
+    } catch (error) {
+        console.error('Error creating resource:', error);
+        res.status(500).json({ error: 'Internal server error' });
+    }
 };
+
 
 // Controller function to fetch all resources
 const getAllResources = async (req, res) => {
@@ -66,20 +61,21 @@ const getResourcesByUserId = async (req, res, next) => {
   }
 };
 
-// Controller function to fetch a single resource by ID
-const getResourceById = async (req, res) => {
-  try {
-    const { resourceId } = req.params;
-    const resource = await Resource.findById(resourceId);
-    if (!resource) {
-      return res.status(404).json({ message: "Resource not found" });
+const getResourcesByUserId = async (req, res) => {
+    try {
+        const { userId } = req.params;
+        const resources = await Resource.find({ userId });
+        if (!resources || resources.length === 0) {
+            return res.status(404).json({ message: 'No resources found for this user' });
+        }
+        res.status(200).json(resources);
+    } catch (error) {
+        console.error('Error fetching resources by user ID:', error);
+        res.status(500).json({ error: 'Internal server error' });
     }
-    res.status(200).json(resource);
-  } catch (error) {
-    console.error("Error fetching resource by ID:", error);
-    res.status(500).json({ error: "Internal server error" });
-  }
 };
+
+
 
 // Controller function to update a resource
 const updateResource = async (req, res) => {
@@ -121,13 +117,38 @@ const deleteResource = async (req, res) => {
   }
 };
 
+// Controller function to set flag in the resource table
+const setFlagInDB = async (req, res) => {
+    try {
+        const { resourceId } = req.params;
+        const { isApproved } = req.body;
+
+        // Update the flag in the database
+        const result = await Resource.updateOne(
+            { _id: resourceId }, // Query criteria
+            { $set: { isApproved: isApproved } } // Update operation
+        );
+
+        if (result.n === 0) {
+            console.error('Resource not found:', resourceId);
+            return res.status(404).json({ error: 'Resource not found' });
+        }
+
+        console.log('Flag set in DB successfully');
+        return res.status(200).json({ message: 'Flag set in DB successfully' });
+    } catch (error) {
+        console.error('Error setting flag in DB:', error);
+        return res.status(500).json({ error: 'Internal server error' });
+    }
+};
+
 module.exports = {
-  test,
-  createResource,
-  getAllResources,
-  getResources,
-  getResourceById,
-  updateResource,
-  deleteResource,
-  getResourcesByUserId
+    test,
+    createResource,
+    getResources,
+    getAllResources,
+    getResourcesByUserId,
+    updateResource,
+    deleteResource,
+    setFlagInDB
 };

@@ -1,4 +1,5 @@
 const User = require('../models/user');
+const Resource = require('../models/resource');
 const { hashPassword, comparePassword } = require('../helpers/auth');
 const jwt = require('jsonwebtoken');
 const nodemailer = require('nodemailer');
@@ -240,6 +241,21 @@ const resetPassword = async (req, res) => {
         res.status(500).json({ error: 'Internal server error' });
     }
 };
+const getAllUsersByResource = async (req, res) => {
+    try {
+        // Find distinct userIds from the Resource model
+        const userIds = await Resource.distinct('userId');
+
+        // Fetch users based on the userIds obtained from Resource model
+        const users = await User.find({ _id: { $in: userIds }, isAdmin: false });
+
+        res.json({ users });
+    } catch (error) {
+        console.error('Error fetching all users:', error);
+        res.status(500).json({ error: 'Internal server error' });
+    }
+};
+
 
 
 module.exports = {
@@ -250,7 +266,8 @@ module.exports = {
     logoutUser,
     getUserDataFromLocation ,
     forgotPassword,
-    resetPassword
+    resetPassword,
+    getAllUsersByResource
 };
 
 
