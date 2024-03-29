@@ -14,8 +14,10 @@ const AddResourceForm = () => {
   const [errors, setErrors] = useState({});
   const location = useLocation();
   const navigate = useNavigate();
+  const userDetail = JSON.parse(localStorage.getItem("user"));
 
   // Extracting disasterId from location state
+  // const disasterId = location.state && location.state.disasterId;
   const disasterId = location.state && location.state.disasterId;
 
   const handleChange = (e) => {
@@ -45,7 +47,8 @@ const AddResourceForm = () => {
           resourceType,
           quantity: parseInt(quantity),
           urgency,
-          comments
+          comments,
+          userId: userDetail._id
         });
         console.log('Resource created:', response.data.resource);
         // Navigate to resource details page passing resource ID

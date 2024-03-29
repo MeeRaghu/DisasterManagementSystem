@@ -39,6 +39,7 @@ const Header = ({ className }) => {
   const handleLogout = async () => {
     try {
       await axios.post('http://localhost:5500/logout', null, { withCredentials: true });
+      localStorage.clear()
       navigate('/');
       window.location.reload();
     } catch (error) {

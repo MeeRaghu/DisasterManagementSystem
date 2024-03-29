@@ -6,6 +6,7 @@ const router=express.Router();
 const cors=require('cors')
 const {test,registerUser,loginUser,getProfile, logoutUser, forgotPassword,resetPassword}=require('../controllers/authController');
 const {createResource}=require('../controllers/resourceController.js');
+const { getResources, getResourcesByUserId,updateResource, deleteResource } = require('../controllers/resourceController.js');
 
 
 router.post('/register',registerUser);
@@ -17,7 +18,10 @@ router.post('/resetPassword',resetPassword);
 
 
 router.post('/createResource',createResource);
-
+router.get('/resources', getResources); 
+router.get('/resources/:userId', getResourcesByUserId); 
+router.put('/resources/update/:resourceId', updateResource); 
+router.delete('/resources/delete/:resourceId', deleteResource); 
 
 
 const multer = require('multer');
