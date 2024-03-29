@@ -34,8 +34,8 @@ export default function Login() {
     
             // Access the response data
             const responseData = response.data;
-    
-            console.log(responseData);
+            delete responseData.confirmpassword;
+            delete responseData.password;
     
             if (responseData.error) {
                 // Clear previous errors
@@ -54,6 +54,7 @@ export default function Login() {
                 // Clear form data and errors on successful login
                 setData({});
                 setErrors({});
+                localStorage.setItem("user", JSON.stringify(responseData))
                 navigate('/disasterCard');
             }
         } catch (error) {
