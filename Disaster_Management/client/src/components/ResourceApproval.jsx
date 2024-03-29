@@ -8,6 +8,7 @@ const ResourceApproval = () => {
   const [showModal, setShowModal] = useState(false);
   const [selectedUser, setSelectedUser] = useState(null);
   const [requestedResources, setRequestedResources] = useState([]);
+  const [emailSent, setEmailSent] = useState(false);
 
   useEffect(() => {
     const fetchUserData = async () => {
@@ -22,29 +23,97 @@ const ResourceApproval = () => {
     fetchUserData();
   }, []);
 
-  const fetchRequestedResources = async (userId) => {
-    try {
-      const response = await axios.get(`http://localhost:5500/getResourcesByUserId/${userId}`);
-      setRequestedResources(response.data);
-    } catch (error) {
-      console.error('Error fetching requested resources:', error);
-    }
-  };
-
   const handleApprove = async (user) => {
     setSelectedUser(user);
     await fetchRequestedResources(user._id);
     setShowModal(true);
   };
 
-  const handleReject = () => {
-    console.log('Rejecting user with ID:', selectedUser._id);
-    setShowModal(false);
+  const handleReject = async (resourceId) => {
+    try {
+      // Send rejection email
+      await axios.post('http://localhost:5500/sendApprovalEmail', {
+        email: selectedUser.email,
+        status: 'rejected'
+      });
+      console.log("Rejection Email sent successfully");
+  
+      // Set flag in DB
+      await setFlagInDB(resourceId, false);
+  
+      // Update the requestedResources state to reflect the rejection
+      setRequestedResources(prevResources => {
+        return prevResources.map(resource => {
+          if (resource._id === resourceId) {
+            return { ...resource, isApproved: false };
+          }
+          return resource;
+        });
+      });
+    } catch (error) {
+      console.error('Error sending rejection email:', error);
+    }
+  };
+  
+  const handleConfirmApprove = async (resourceId) => {
+    try {
+      // Send approval email with status set to "approved"
+      await axios.post('http://localhost:5500/sendApprovalEmail', {
+        email: selectedUser.email,
+        status: 'approved'
+      });
+      console.log("Approval Email sent successfully");
+  
+      // Set flag in DB
+      await setFlagInDB(resourceId, true);
+  
+      // Update the requestedResources state to reflect the approval
+      setRequestedResources(prevResources => {
+        return prevResources.map(resource => {
+          if (resource._id === resourceId) {
+            return { ...resource, isApproved: true };
+          }
+          return resource;
+        });
+      });
+    } catch (error) {
+      console.error('Error sending approval email:', error);
+    }
+  };
+  
+  const setFlagInDB = async (resourceId, isApproved) => {
+    try {
+      await axios.put(`http://localhost:5500/setFlagInDB/${resourceId}`, {
+        isApproved
+      });
+      console.log("Flag set in DB successfully");
+    } catch (error) {
+      console.error('Error setting flag in DB:', error);
+    }
   };
 
-  const handleConfirmApprove = () => {
-    console.log('Approving user with ID:', selectedUser._id);
-    setShowModal(false);
+  const fetchRequestedResources = async (userId) => {
+    try {
+      const response = await axios.get(`http://localhost:5500/getResourcesByUserId/${userId}`);
+      const resourcesWithDisasterInfo = await Promise.all(response.data.map(async resource => {
+        const disasterInfo = await fetchDisasterInfo(resource.disasterId);
+        return { ...resource, disasterInfo };
+      }));
+      setRequestedResources(resourcesWithDisasterInfo);
+    } catch (error) {
+      console.error('Error fetching requested resources:', error);
+    }
+  };
+
+  const fetchDisasterInfo = async (disasterId) => {
+    try {
+      const response = await axios.get(`http://localhost:5500/getDisasterInfo/${disasterId}`);
+      console.log('Disaster Response:', response.data);
+      return response.data;
+    } catch (error) {
+      console.error('Error fetching disaster information:', error);
+      return null;
+    }
   };
 
   return (
@@ -83,19 +152,34 @@ const ResourceApproval = () => {
           <Modal.Title className="modal-title">Requested Resources</Modal.Title>
         </Modal.Header>
         <Modal.Body className="modal-body">
-          {requestedResources.map(resource => (
-            <div key={resource._id}>
-              <p><strong>Resource Type:</strong> {resource.resourceType}</p>
-              <p><strong>Quantity:</strong> {resource.quantity}</p>
-              <p><strong>Urgency:</strong> {resource.urgency}</p>
-              <p><strong>Comments:</strong> {resource.comments}</p>
-              <div className="mt-3 text-center">
-                <Button variant="success" className="mr-3" onClick={handleConfirmApprove}>Approve</Button>
-                <Button variant="danger" onClick={handleReject}>Reject</Button>
-              </div>
-              <hr className="modal-divider" />
-            </div>
-          ))}
+        {requestedResources.map(resource => (
+  <div key={resource._id}>
+    <div className="disaster-info">
+      <p><strong>Disaster Type:</strong> {resource.disasterInfo?.type}</p>
+      <p><strong>Disaster Location:</strong> {resource.disasterInfo?.location}</p>
+    </div>
+    <div className="resource-info">
+      <p><strong>Resource Type:</strong> {resource.resourceType}</p>
+      <p><strong>Quantity:</strong> {resource.quantity}</p>
+      <p><strong>Urgency:</strong> {resource.urgency}</p>
+      <p><strong>Comments:</strong> {resource.comments}</p>
+    </div>
+    <div className="mt-3 text-center">
+      {resource.isApproved === true ? (
+        <Button variant="success" className="approval-button">Approved</Button>
+      ) : resource.isApproved === false ? (
+        <Button variant="danger" className="approval-button-rej">Rejected</Button>
+      ) : (
+        <>
+         <Button variant="success" className="mr-3" onClick={() => handleConfirmApprove(resource._id)}>Approve</Button>
+         <Button variant="danger" onClick={() => handleReject(resource._id)}>Reject</Button>
+        </>
+      )}
+    </div>
+    <hr className="modal-divider" />
+  </div>
+))}
+
         </Modal.Body>
       </Modal>
     </div>

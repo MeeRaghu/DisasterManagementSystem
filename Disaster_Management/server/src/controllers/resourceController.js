@@ -8,16 +8,17 @@ const test = (req, res) => {
 // Controller function to create a new resource
 const createResource = async (req, res) => {
     try {
-        const { disasterId,userId,resourceType, quantity, urgency, comments } = req.body;
+        const { disasterId, userId, resourceType, quantity, urgency, comments } = req.body;
 
-        // Create resource in the database
+        // Create resource in the database with isApproved set to false by default
         const newResource = await Resource.create({
             disasterId,
             userId,
             resourceType,
             quantity,
             urgency,
-            comments
+            comments,
+            isApproved: false // Set isApproved to false by default
         });
 
         res.status(201).json({ message: 'Resource created successfully', resource: newResource });
@@ -89,11 +90,37 @@ const deleteResource = async (req, res) => {
     }
 };
 
+// Controller function to set flag in the resource table
+const setFlagInDB = async (req, res) => {
+    try {
+        const { resourceId } = req.params;
+        const { isApproved } = req.body;
+
+        // Update the flag in the database
+        const result = await Resource.updateOne(
+            { _id: resourceId }, // Query criteria
+            { $set: { isApproved: isApproved } } // Update operation
+        );
+
+        if (result.n === 0) {
+            console.error('Resource not found:', resourceId);
+            return res.status(404).json({ error: 'Resource not found' });
+        }
+
+        console.log('Flag set in DB successfully');
+        return res.status(200).json({ message: 'Flag set in DB successfully' });
+    } catch (error) {
+        console.error('Error setting flag in DB:', error);
+        return res.status(500).json({ error: 'Internal server error' });
+    }
+};
+
 module.exports = {
     test,
     createResource,
     getAllResources,
     getResourcesByUserId,
     updateResource,
-    deleteResource
+    deleteResource,
+    setFlagInDB
 };

@@ -145,3 +145,25 @@ exports.deleteDisaster = async (req, res) => {
         res.status(400).json('Error: ' + error.message);
     }
 };
+exports.getDisasterInfo = async (req, res) => {
+    try {
+        const { id } = req.params;
+
+        // Validate if the provided ID is a valid ObjectId
+        if (!isValidObjectId(id)) {
+            return res.status(400).json({ error: 'Invalid ID format' });
+        }
+
+        // Find the disaster by ID
+        const disaster = await Disaster.findById(id);
+
+        if (!disaster) {
+            return res.status(404).json({ error: 'Disaster not found' });
+        }
+
+        res.json(disaster);
+    } catch (error) {
+        console.error('Error fetching disaster information:', error);
+        res.status(500).json({ error: 'Internal server error' });
+    }
+};

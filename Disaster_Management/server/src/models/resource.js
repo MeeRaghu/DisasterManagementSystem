@@ -26,6 +26,10 @@ const resourceSchema = new mongoose.Schema({
   comments: {
     type: String
   },
+  isApproved: {
+    type: Boolean,
+    default: null // Default value is null
+  },
   createdAt: {
     type: Date,
     default: Date.now

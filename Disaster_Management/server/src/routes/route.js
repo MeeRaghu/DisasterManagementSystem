@@ -5,8 +5,8 @@ const weatherController = require('../../src/controllers/weatherController.js');
 const router=express.Router();
 const cors=require('cors')
 const {test,registerUser,loginUser,getProfile, logoutUser, forgotPassword,resetPassword,getAllUsersByResource}=require('../controllers/authController');
-const {createResource,getResourcesByUserId}=require('../controllers/resourceController.js');
-const {getResourceApprovalData}=require('../controllers/approvalController.js');
+const {createResource,getResourcesByUserId,setFlagInDB}=require('../controllers/resourceController.js');
+const {sendApprovalEmail}=require('../controllers/approvalController.js');
 
 
 router.post('/register',registerUser);
@@ -19,9 +19,11 @@ router.get('/getAllUsersByResource',getAllUsersByResource);
 
 
 router.post('/createResource',createResource);
+router.post('/sendApprovalEmail', sendApprovalEmail);
 router.get('/getResourcesByUserId/:userId', getResourcesByUserId);
+router.put('/setFlagInDB/:resourceId',setFlagInDB);
 
-router.get('/resourceApproval',getResourceApprovalData);
+
 
 
 
@@ -51,6 +53,7 @@ router.post('/submitDisaster', upload.single('myFile'), disasterController.submi
 router.get('/getDisasters', disasterController.getDisasters);
 router.put('/editDisaster/:id', upload.single('image'), disasterController.editDisaster);
 router.delete('/deleteDisaster/:id', disasterController.deleteDisaster);
+router.get('/getDisasterInfo/:id',disasterController.getDisasterInfo);
 // Weather route
 router.post('/getWeather', weatherController.getWeather);
 

@@ -72,7 +72,7 @@ const AddResourceForm = () => {
         });
         console.log('Resource created:', response.data.resource);
         // Navigate to resource details page passing resource ID
-        navigate('/resourceApproval', { state: { resourceId: response.data.resource._id } });
+        navigate('/resourceDetails', { state: { resourceId: response.data.resource._id } });
       } catch (error) {
         console.error('Error creating resource:', error);
       }
