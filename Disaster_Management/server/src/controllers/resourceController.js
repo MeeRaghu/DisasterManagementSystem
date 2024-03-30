@@ -48,18 +48,6 @@ const getResources = async (req, res) => {
   }
 };
 
-// fetch the resouces of certain user only
-const getResourcesByUserId = async (req, res, next) => {
-  try {
-    const { userId } = req.params;
-
-    const resources = await Resource.find({ userId });
-    res.status(200).json(resources);
-  } catch (error) {
-    console.error("Error fetching resources:", error);
-    res.status(500).json({ error: "Internal server error" });
-  }
-};
 
 const getResourcesByUserId = async (req, res) => {
     try {
