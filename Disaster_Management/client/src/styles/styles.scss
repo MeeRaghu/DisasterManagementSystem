@@ -201,3 +201,22 @@ hr{
   cursor: pointer;
 }
 
+
+
+.orange-form {
+  background-color: orange; /* Apply orange color only to the form */
+}
+
+.wrapper-res {
+  display: flex;
+  flex-direction: column;
+  min-height: 100vh;
+}
+
+.content-res {
+  flex: 1;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+

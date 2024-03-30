@@ -97,7 +97,7 @@ const ResourceCardList = () => {
           {!isAdmin && (
             <button
               type="button"
-              onClick={() => navigate(-1)}
+              onClick={() => navigate('/disastercard')}
               className="btn btn-md btn-primary"
             >
               Back
