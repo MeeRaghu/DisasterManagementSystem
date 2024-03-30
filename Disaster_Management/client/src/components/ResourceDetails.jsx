@@ -82,7 +82,7 @@ const ResourceCardList = () => {
   };
 
   return (
-    <div style={{ minHeight: "100vh", display: "flex", flexDirection: "column" }}>
+    <div style={{ display: "flex", flexDirection: "column", minHeight: "100vh" }}>
       <Header />
       <div className="container mt-5 flex-grow-1">
         <div

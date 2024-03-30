@@ -104,6 +104,7 @@ const ResourceApproval = () => {
       setRequestedResources(resourcesWithDisasterInfo);
     } catch (error) {
       console.error('Error fetching requested resources:', error);
+      setRequestedResources([]); // Set requestedResources to empty array if no resources found
     }
   };
 
@@ -119,77 +120,89 @@ const ResourceApproval = () => {
   };
 
   return (
-    <div>
-          <Header />
-    <div className="resource-approval">
-      <Container>
-        <h2 className="text-center mb-4">Resource Approval</h2>
-        {userData.map(user => (
-          <div key={user._id}>
-            <h3>User Details</h3>
-            <Card className="user-card">
-              <Card.Body>
-                <Row>
-                  <Col md={6}>
-                    <p><strong>Username:</strong> {user.name}</p>
-                    <p><strong>Email:</strong> {user.email}</p>
-                    <p><strong>Address:</strong> {user.address}</p>
-                  </Col>
-                  <Col md={6}>
-                    <p><strong>City:</strong> {user.city}</p>
-                    <p><strong>Postal Code:</strong> {user.postalCode}</p>
-                    <p><strong>Country:</strong> {user.country}</p>
-                  </Col>
-                </Row>
-              </Card.Body>
-            </Card>
+    <div style={{ display: "flex", flexDirection: "column", minHeight: "100vh" }}>
+      <Header />
+      <div className="resource-approval">
+        <Container>
+          <h2 className="text-center mb-4">Resource Approval</h2>
+          {userData.length > 0 ? (
+            userData.map(user => (
+              <div key={user._id}>
+                <h3>User Details</h3>
+                <Card className="user-card">
+                  <Card.Body>
+                    <Row>
+                      <Col md={6}>
+                        <p><strong>Username:</strong> {user.name}</p>
+                        <p><strong>Email:</strong> {user.email}</p>
+                        <p><strong>Address:</strong> {user.address}</p>
+                      </Col>
+                      <Col md={6}>
+                        <p><strong>City:</strong> {user.city}</p>
+                        <p><strong>Postal Code:</strong> {user.postalCode}</p>
+                        <p><strong>Country:</strong> {user.country}</p>
+                      </Col>
+                    </Row>
+                  </Card.Body>
+                </Card>
 
-            <div className="mt-4">
-              <Button variant="success" onClick={() => handleApprove(user)}>Check Resource Requested</Button>
+                <div className="mt-4">
+                  <Button variant="success" onClick={() => handleApprove(user)}>Check Resource Requested</Button>
+                </div>
+              </div>
+            ))
+          ) : (
+            <div className="text-center flex-grow-1 d-flex align-items-center justify-content-center">
+              <h5>No user details found</h5>
             </div>
-          </div>
-        ))}
-      </Container>
+          )}
+        </Container>
 
-      <Modal show={showModal} onHide={() => setShowModal(false)} size="xl">
-        <Modal.Header closeButton className="modal-header">
-          <Modal.Title className="modal-title">Requested Resources</Modal.Title>
-        </Modal.Header>
-        <Modal.Body className="modal-body">
-        {requestedResources.map(resource => (
-  <div key={resource._id}>
-    <div className="disaster-info">
-      <p><strong>Disaster Type:</strong> {resource.disasterInfo?.type}</p>
-      <p><strong>Disaster Location:</strong> {resource.disasterInfo?.location}</p>
-    </div>
-    <div className="resource-info">
-      <p><strong>Resource Type:</strong> {resource.resourceType}</p>
-      <p><strong>Quantity:</strong> {resource.quantity}</p>
-      <p><strong>Urgency:</strong> {resource.urgency}</p>
-      <p><strong>Comments:</strong> {resource.comments}</p>
-    </div>
-    <div className="mt-3 text-center">
-      {resource.isApproved === true ? (
-        <Button variant="success" className="approval-button">Approved</Button>
-      ) : resource.isApproved === false ? (
-        <Button variant="danger" className="approval-button-rej">Rejected</Button>
-      ) : (
-        <>
-         <Button variant="success" className="mr-3" onClick={() => handleConfirmApprove(resource._id)}>Approve</Button>
-         <Button variant="danger" onClick={() => handleReject(resource._id)}>Reject</Button>
-        </>
-      )}
-    </div>
-    <hr className="modal-divider" />
-  </div>
-))}
-
-        </Modal.Body>
-      </Modal>
-    </div>
-    <Footer />
+        <Modal show={showModal} onHide={() => setShowModal(false)} size="xl">
+          <Modal.Header closeButton className="modal-header">
+            <Modal.Title className="modal-title">Requested Resources</Modal.Title>
+          </Modal.Header>
+          <Modal.Body className="modal-body">
+            {requestedResources.length > 0 ? (
+              requestedResources.map(resource => (
+                <div key={resource._id}>
+                  <div className="disaster-info">
+                    <p><strong>Disaster Type:</strong> {resource.disasterInfo?.type}</p>
+                    <p><strong>Disaster Location:</strong> {resource.disasterInfo?.location}</p>
+                  </div>
+                  <div className="resource-info">
+                    <p><strong>Resource Type:</strong> {resource.resourceType}</p>
+                    <p><strong>Quantity:</strong> {resource.quantity}</p>
+                    <p><strong>Urgency:</strong> {resource.urgency}</p>
+                    <p><strong>Comments:</strong> {resource.comments}</p>
+                  </div>
+                  <div className="mt-3 text-center">
+                    {resource.isApproved === true ? (
+                      <Button variant="success" className="approval-button">Approved</Button>
+                    ) : resource.isApproved === false ? (
+                      <Button variant="danger" className="approval-button-rej">Rejected</Button>
+                    ) : (
+                      <>
+                        <Button variant="success" className="mr-3" onClick={() => handleConfirmApprove(resource._id)}>Approve</Button>
+                        <Button variant="danger" onClick={() => handleReject(resource._id)}>Reject</Button>
+                      </>
+                    )}
+                  </div>
+                  <hr className="modal-divider" />
+                </div>
+              ))
+            ) : (
+              <div className="text-center mt-4">
+                <h5>No requested resources found</h5>
+              </div>
+            )}
+          </Modal.Body>
+        </Modal>
+      </div>
+      <Footer />
     </div>
   );
 };
 
 export default ResourceApproval;
+
