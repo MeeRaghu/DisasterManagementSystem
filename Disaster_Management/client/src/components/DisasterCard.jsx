@@ -48,7 +48,6 @@ const DisasterCard = () => {
   };
 
   const handleAddResourceClick = (disasterId) => {
-    // Navigate to '/addResource' page and pass disasterId as state
     navigate("/addResource", { state: { disasterId } });
   };
 
@@ -66,10 +65,9 @@ const DisasterCard = () => {
 
   return (
     <div>
+      {disasters.length === 0 && <Footer />}
       <Header />
-      <div>
-        {/* <h2 style={{ fontWeight: 'bold' }}>Disaster Cards</h2> */}
-        {/* <button type="button" className='btn btn-md btn-primary'>Resource Details</button> */}
+      <div className="disaster-container">
         <div
           className="disaster-header"
           style={{
@@ -89,48 +87,53 @@ const DisasterCard = () => {
             </button>
           )}
         </div>
-        <Slider {...settings}>
-          {disasters.map((disaster) => (
-            <div key={disaster._id} className="disaster-card">
-              {/* Pass disasterId to handleAddResourceClick */}
-              <button
-                onClick={() => handleAddResourceClick(disaster._id)}
-                className="add-resource-button"
-              >
-                Add Resource
-              </button>
-              <div className="card-content">
-                <p>
-                  <strong>{disaster.type}</strong>
-                </p>
-                <p>
-                  <strong>Location:</strong> {disaster.location}
-                </p>
-                <p>
-                  <strong>Description:</strong> {disaster.description}
-                </p>
-                <p>
-                  <strong>Date and Time:</strong>{" "}
-                  {formatDateTime(disaster.dateAndTime)}
-                </p>
-                <p>
-                  <strong>Severity Level:</strong> {disaster.severityLevel}
-                </p>
+        {disasters.length > 0 && (
+          <Slider {...settings}>
+            {disasters.map((disaster) => (
+              <div key={disaster._id} className="disaster-card">
+                <button
+                  onClick={() => handleAddResourceClick(disaster._id)}
+                  className="add-resource-button"
+                >
+                  Add Resource
+                </button>
+                <div className="card-content">
+                  <p>
+                    <strong>{disaster.type}</strong>
+                  </p>
+                  <p>
+                    <strong>Location:</strong> {disaster.location}
+                  </p>
+                  <p>
+                    <strong>Description:</strong> {disaster.description}
+                  </p>
+                  <p>
+                    <strong>Date and Time:</strong>{" "}
+                    {formatDateTime(disaster.dateAndTime)}
+                  </p>
+                  <p>
+                    <strong>Severity Level:</strong> {disaster.severityLevel}
+                  </p>
+                </div>
+                {disaster.image && (
+                  <img
+                    src={`http://localhost:5500/assets/${disaster.image}`}
+                    alt="Disaster"
+                    className="card-image"
+                  />
+                )}
+                <hr />
               </div>
-              {disaster.image && (
-                <img
-                  src={`http://localhost:5500/assets/${disaster.image}`}
-                  alt="Disaster"
-                  className="card-image"
-                />
-              )}
-              <hr />
-            </div>
-          ))}
-        </Slider>
+            ))}
+          </Slider>
+        )}
+        {disasters.length === 0 && (
+          <div className="text-center">
+            <h5>No disasters found</h5>
+          </div>
+        )}
       </div>
-      <div></div>
-      <Footer />
+      {disasters.length > 0 && <Footer />}
     </div>
   );
 };

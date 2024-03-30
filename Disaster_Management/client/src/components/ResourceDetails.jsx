@@ -82,9 +82,9 @@ const ResourceCardList = () => {
   };
 
   return (
-    <div>
+    <div style={{ minHeight: "100vh", display: "flex", flexDirection: "column" }}>
       <Header />
-      <div className="container mt-5">
+      <div className="container mt-5 flex-grow-1">
         <div
           className="disaster-header"
           style={{
@@ -105,9 +105,9 @@ const ResourceCardList = () => {
           )}
         </div>
 
-        <div className="row">
-          {resources.length > 0 ? (
-            resources.map((resource) => (
+        {resources.length > 0 ? (
+          <div className="row">
+            {resources.map((resource) => (
               <div className="col-md-4 mb-4" key={resource._id}>
                 <div className="card">
                   <div className="card-body">
@@ -162,7 +162,6 @@ const ResourceCardList = () => {
                       <>
                         <h5 className="card-title">{resource.resourceType}</h5>
                         <p className="card-text">
-                          
                           <strong>Quantity:</strong> {resource.quantity}
                         </p>
                         <p className="card-text">
@@ -190,13 +189,13 @@ const ResourceCardList = () => {
                   </div>
                 </div>
               </div>
-            ))
-          ) : (
-            <div className="col text-center">
-              <h5>No resources found</h5>
-            </div>
-          )}
-        </div>
+            ))}
+          </div>
+        ) : (
+          <div className="text-center flex-grow-1 d-flex align-items-center justify-content-center">
+            <h5>No resources found</h5>
+          </div>
+        )}
       </div>
       <Footer />
     </div>
@@ -204,4 +203,3 @@ const ResourceCardList = () => {
 };
 
 export default ResourceCardList;
-

@@ -29,8 +29,14 @@ body {
   color: white;
 }
 
+body {
+  display: flex;
+  flex-direction: column;
+  min-height: 100vh; /* Ensure the body takes up at least the full viewport height */
+}
+
 .main-content {
-  padding: 20px;
+  flex-grow: 1; /* Allow the content area to grow to fill available space */
 }
 
 .footer {
@@ -38,7 +44,10 @@ body {
   color: white;
   padding: 30px;
   text-align: center;
+  margin-top: auto; /* Pushes the footer to the bottom */
 }
+
+
 
 /* Add more styles as needed */
 .background-image {
@@ -191,3 +200,4 @@ hr{
   text-decoration: underline;
   cursor: pointer;
 }
+
