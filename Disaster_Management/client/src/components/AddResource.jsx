@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { Form, Button, Container, Row, Col } from 'react-bootstrap';
+import { Button } from 'react-bootstrap';
 import { useLocation, useNavigate } from 'react-router-dom';
 import axios from 'axios';
 import Header from '../components/Header'; 
@@ -12,24 +12,21 @@ const AddResourceForm = () => {
   const [urgency, setUrgency] = useState('');
   const [comments, setComments] = useState('');
   const [errors, setErrors] = useState({});
-  const [userId, setUserId] = useState(null); // Define userId state variable
+  const [userId, setUserId] = useState(null);
   const location = useLocation();
   const navigate = useNavigate();
-  const userDetail = JSON.parse(localStorage.getItem("user"));
 
   useEffect(() => {
-    // Retrieve userId from the token stored in cookies
     const token = document.cookie.split('; ').find(row => row.startsWith('token='));
     if (token) {
       const parsedToken = token.split('=')[1];
-      const decodedToken = parseJwt(parsedToken); // Function to parse JWT token
+      const decodedToken = parseJwt(parsedToken);
       if (decodedToken && decodedToken.id) {
         setUserId(decodedToken.id);
       }
     }
   }, []);
 
-  // Function to parse JWT token
   const parseJwt = (token) => {
     try {
       return JSON.parse(atob(token.split('.')[1]));
@@ -38,8 +35,6 @@ const AddResourceForm = () => {
     }
   };
 
-  // Extracting disasterId from location state
-  // const disasterId = location.state && location.state.disasterId;
   const disasterId = location.state && location.state.disasterId;
 
   const handleChange = (e) => {
@@ -62,7 +57,8 @@ const AddResourceForm = () => {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    if (validateForm()) {
+    const isFormValid = validateForm(); // Validate the form
+    if (isFormValid) {
       try {
         const response = await axios.post('http://localhost:5500/createResource', {
           disasterId,
@@ -71,69 +67,78 @@ const AddResourceForm = () => {
           quantity: parseInt(quantity),
           urgency,
           comments,
-          userId: userDetail._id
         });
         console.log('Resource created:', response.data.resource);
-        // Navigate to resource details page passing resource ID
         navigate('/resourceDetails', { state: { resourceId: response.data.resource._id } });
       } catch (error) {
         console.error('Error creating resource:', error);
       }
     }
   };
+  
 
+  const handleNavigateToDisasterCard = () => {
+    navigate('/disastercard');
+  };
 
   return (
-    <div>
+    <div className="wrapper-res">
       <Header />
-      <Container className="my-5 py-4"> 
-        <Row className="justify-content-center">
-          <Col md={6}>
-            <h2 className="text-center mb-4">Add Resources</h2>
-            <Form onSubmit={handleSubmit}>
-              <Form.Group controlId="resourceType">
-                <Form.Label>Resource Type *</Form.Label>
-                <Form.Control as="select" name="resourceType" value={resourceType} onChange={handleChange} isInvalid={!!errors.resourceType}>
-                  <option value="">Select resource type</option>
-                  <option value="Food">Food</option>
-                  <option value="First Aid Kit">First Aid Kit</option>
-                  <option value="Water">Water</option>
-                  <option value="Clothes">Clothes</option>
-                </Form.Control>
-                <Form.Control.Feedback type="invalid">{errors.resourceType}</Form.Control.Feedback>
-              </Form.Group>
+      <div className="content-res">
+        <div className="container">
+          <div className="row justify-content-center align-items-center">
+            <div className="col-md-6">
+              <form onSubmit={handleSubmit} className="p-4 rounded add-res-container orange-form">
+                <h2 className="text-center">Add Resources</h2>
+                <div className="form-group">
+                  <label>Resource Type *</label>
+                  <select className={`form-control ${errors.resourceType ? 'is-invalid' : ''}`} name="resourceType" value={resourceType} onChange={handleChange}>
+                    <option value="">Select resource type</option>
+                    <option value="Food">Food</option>
+                    <option value="First Aid Kit">First Aid Kit</option>
+                    <option value="Water">Water</option>
+                    <option value="Clothes">Clothes</option>
+                  </select>
+                  {errors.resourceType && <div className="invalid-feedback">{errors.resourceType}</div>}
+                </div>
 
-              <Form.Group controlId="quantity">
-                <Form.Label>Quantity *</Form.Label>
-                <Form.Control type="text" name="quantity" value={quantity} onChange={handleChange} isInvalid={!!errors.quantity} />
-                <Form.Control.Feedback type="invalid">{errors.quantity}</Form.Control.Feedback>
-              </Form.Group>
+                <div className="form-group">
+                  <label>Quantity *</label>
+                  <input type="text" className={`form-control ${errors.quantity ? 'is-invalid' : ''}`} name="quantity" value={quantity} onChange={handleChange} />
+                  {errors.quantity && <div className="invalid-feedback">{errors.quantity}</div>}
+                </div>
 
-              <Form.Group controlId="urgency">
-                <Form.Label>Urgency *</Form.Label>
-                <Form.Control as="select" name="urgency" value={urgency} onChange={handleChange} isInvalid={!!errors.urgency}>
-                  <option value="">Select urgency</option>
-                  <option value="High">High</option>
-                  <option value="Medium">Medium</option>
-                  <option value="Low">Low</option>
-                </Form.Control>
-                <Form.Control.Feedback type="invalid">{errors.urgency}</Form.Control.Feedback>
-              </Form.Group>
+                <div className="form-group">
+                  <label>Urgency *</label>
+                  <select className={`form-control ${errors.urgency ? 'is-invalid' : ''}`} name="urgency" value={urgency} onChange={handleChange}>
+                    <option value="">Select urgency</option>
+                    <option value="High">High</option>
+                    <option value="Medium">Medium</option>
+                    <option value="Low">Low</option>
+                  </select>
+                  {errors.urgency && <div className="invalid-feedback">{errors.urgency}</div>}
+                </div>
 
-              <Form.Group controlId="comments">
-                <Form.Label>Additional Comments</Form.Label>
-                <Form.Control as="textarea" rows={8} name="comments" value={comments} onChange={handleChange} />
-              </Form.Group>
+                <div className="form-group">
+                  <label>Additional Comments</label>
+                  <textarea className="form-control" rows={4} name="comments" value={comments} onChange={handleChange} />
+                </div>
 
-              <div className="text-center">
-                <Button variant="primary" type="submit">
-                  Submit
-                </Button>
-              </div>
-            </Form>
-          </Col>
-        </Row>
-      </Container>
+                <div className="text-center">
+                  <Button className="btn-good-color" type="submit">
+                    Submit
+                  </Button>
+                  <span className="ml-4"></span> {/* Add more margin */}
+                  <Button className="btn-primary" onClick={handleNavigateToDisasterCard}>
+                    Go to Disaster Card
+                  </Button>
+                </div>
+
+              </form>
+            </div>
+          </div>
+        </div>
+      </div>
       <Footer />
     </div>
   );

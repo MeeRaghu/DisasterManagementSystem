@@ -36,7 +36,8 @@ const ResourceApproval = () => {
       // Send rejection email
       await axios.post('http://localhost:5500/sendApprovalEmail', {
         email: selectedUser.email,
-        status: 'rejected'
+        status: 'rejected',
+        userName:selectedUser.name
       });
       console.log("Rejection Email sent successfully");
   
@@ -62,7 +63,8 @@ const ResourceApproval = () => {
       // Send approval email with status set to "approved"
       await axios.post('http://localhost:5500/sendApprovalEmail', {
         email: selectedUser.email,
-        status: 'approved'
+        status: 'approved',
+        userName:selectedUser.name
       });
       console.log("Approval Email sent successfully");
   
