@@ -2,6 +2,8 @@ import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 import { Button, Card, Container, Row, Col, Modal } from 'react-bootstrap';
 import '../styles/ResourceApproval.scss';
+import Header from "../components/Header";
+import Footer from "../components/Footer";
 
 const ResourceApproval = () => {
   const [userData, setUserData] = useState([]);
@@ -117,9 +119,11 @@ const ResourceApproval = () => {
   };
 
   return (
+    <div>
+          <Header />
     <div className="resource-approval">
       <Container>
-        <h2 className="text-center mb-4">User Approval</h2>
+        <h2 className="text-center mb-4">Resource Approval</h2>
         {userData.map(user => (
           <div key={user._id}>
             <h3>User Details</h3>
@@ -182,6 +186,8 @@ const ResourceApproval = () => {
 
         </Modal.Body>
       </Modal>
+    </div>
+    <Footer />
     </div>
   );
 };

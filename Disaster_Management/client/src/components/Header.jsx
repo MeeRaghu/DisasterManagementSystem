@@ -47,13 +47,17 @@ const Header = ({ className }) => {
     }
   };
 
+  const navigateToResourceApproval = () => {
+    navigate('/resourceApproval'); // Redirect to the ResourceApproval page
+  };
+
+  const navigateToDisasterCard = () => {
+    navigate('/disasterCard'); // Redirect to the DisasterCard page
+  };
+
   const isHomePage = location.pathname === '/';
   const isLoginPage = location.pathname === '/login';
   const isRegisterPage = location.pathname === '/register';
-
-  const navigateToDisasterCard = () => {
-    navigate('/disasterCard');
-  };
 
   return (
     <header className={`header ${className}`}>
@@ -75,6 +79,7 @@ const Header = ({ className }) => {
           {isAdmin && location.pathname === '/disasterForm' && (
             <p className="toggle" onClick={navigateToDisasterCard}>Disaster Card</p>
           )}
+          {isAdmin && <p className="toggle" onClick={navigateToResourceApproval}>Approve Resource</p>}
           {userName && (
             <p className="logout" onClick={handleLogout}>
               <FontAwesomeIcon icon={faSignOutAlt} /> {/* Add Logout icon */}
