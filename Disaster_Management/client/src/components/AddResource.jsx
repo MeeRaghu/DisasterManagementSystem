@@ -66,7 +66,7 @@ const AddResourceForm = () => {
           resourceType,
           quantity: parseInt(quantity),
           urgency,
-          comments,
+          comments
         });
         console.log('Resource created:', response.data.resource);
         navigate('/resourceDetails', { state: { resourceId: response.data.resource._id } });

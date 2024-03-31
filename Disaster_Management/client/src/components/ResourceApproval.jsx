@@ -10,7 +10,7 @@ const ResourceApproval = () => {
   const [showModal, setShowModal] = useState(false);
   const [selectedUser, setSelectedUser] = useState(null);
   const [requestedResources, setRequestedResources] = useState([]);
-  const [emailSent, setEmailSent] = useState(false);
+  const [resourceStatus, setResourceStatus] = useState({});
 
   useEffect(() => {
     const fetchUserData = async () => {
@@ -44,15 +44,11 @@ const ResourceApproval = () => {
       // Set flag in DB
       await setFlagInDB(resourceId, false);
   
-      // Update the requestedResources state to reflect the rejection
-      setRequestedResources(prevResources => {
-        return prevResources.map(resource => {
-          if (resource._id === resourceId) {
-            return { ...resource, isApproved: false };
-          }
-          return resource;
-        });
-      });
+      // Update the resource status
+      setResourceStatus(prevStatus => ({
+        ...prevStatus,
+        [resourceId]: false
+      }));
     } catch (error) {
       console.error('Error sending rejection email:', error);
     }
@@ -71,15 +67,11 @@ const ResourceApproval = () => {
       // Set flag in DB
       await setFlagInDB(resourceId, true);
   
-      // Update the requestedResources state to reflect the approval
-      setRequestedResources(prevResources => {
-        return prevResources.map(resource => {
-          if (resource._id === resourceId) {
-            return { ...resource, isApproved: true };
-          }
-          return resource;
-        });
-      });
+      // Update the resource status
+      setResourceStatus(prevStatus => ({
+        ...prevStatus,
+        [resourceId]: true
+      }));
     } catch (error) {
       console.error('Error sending approval email:', error);
     }
@@ -165,7 +157,7 @@ const ResourceApproval = () => {
             <Modal.Title className="modal-title">Requested Resources</Modal.Title>
           </Modal.Header>
           <Modal.Body className="modal-body">
-            {requestedResources.length > 0 ? (
+            {requestedResources !== null && requestedResources.length > 0 ? (
               requestedResources.map(resource => (
                 <div key={resource._id}>
                   <div className="disaster-info">
@@ -183,28 +175,28 @@ const ResourceApproval = () => {
                       <Button variant="success" className="approval-button">Approved</Button>
                     ) : resource.isApproved === false ? (
                       <Button variant="danger" className="approval-button-rej">Rejected</Button>
-                    ) : (
-                      <>
-                        <Button variant="success" className="mr-3" onClick={() => handleConfirmApprove(resource._id)}>Approve</Button>
-                        <Button variant="danger" onClick={() => handleReject(resource._id)}>Reject</Button>
-                      </>
-                    )}
+                      ) : (
+                        <>
+                          <Button variant="success" className="mr-3" onClick={() => handleConfirmApprove(resource._id)}>Approve</Button>
+                          <Button variant="danger" onClick={() => handleReject(resource._id)}>Reject</Button>
+                        </>
+                      )}
+                    </div>
+                    <hr className="modal-divider" />
                   </div>
-                  <hr className="modal-divider" />
+                ))
+              ) : (
+                <div className="text-center mt-4">
+                  <h5>No requested resources found</h5>
                 </div>
-              ))
-            ) : (
-              <div className="text-center mt-4">
-                <h5>No requested resources found</h5>
-              </div>
-            )}
-          </Modal.Body>
-        </Modal>
+              )}
+            </Modal.Body>
+          </Modal>
+        </div>
+        <Footer />
       </div>
-      <Footer />
-    </div>
-  );
-};
-
-export default ResourceApproval;
-
+    );
+  };
+  
+  export default ResourceApproval;
+  
