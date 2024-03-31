@@ -18,7 +18,7 @@ const createResource = async (req, res) => {
             quantity,
             urgency,
             comments,
-            isApproved: false // Set isApproved to false by default
+            isApproved: null // Set isApproved to false by default
         });
          res.status(201).json({ message: 'Resource created successfully', resource: newResource });
     } catch (error) {
