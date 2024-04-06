@@ -298,14 +298,6 @@ const DisasterList = () => {
                       <BsTrash /> Delete
                     </button>
                   </div>
-                  {showConfirmation && (
-                    <div className="mt-2">
-                      <p>Are you sure you want to save changes?</p>
-                      <button className="btn btn-success" onClick={() => handleSave(disaster._id)}>
-                        Confirm Save
-                      </button>
-                    </div>
-                  )}
                 </td>
               </tr>
             ))}
@@ -326,6 +318,25 @@ const DisasterList = () => {
         )}
       </div>
       <Footer />
+      {showConfirmation && (
+        <div className="modal fade show" style={{ display: 'block' }}>
+          <div className="modal-dialog modal-dialog-centered">
+            <div className="modal-content">
+              <div className="modal-header">
+                <h5 className="modal-title">Save Changes</h5>
+                <button type="button" className="btn-close" onClick={toggleConfirmation}></button>
+              </div>
+              <div className="modal-body">
+                <p>Are you sure you want to save changes?</p>
+              </div>
+              <div className="modal-footer">
+                <button type="button" className="btn btn-secondary" onClick={toggleConfirmation}>Cancel</button>
+                <button type="button" className="btn btn-primary" onClick={() => handleSave(editingId)}>Confirm Save</button>
+              </div>
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   );
 };
