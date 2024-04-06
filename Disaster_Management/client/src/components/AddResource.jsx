@@ -4,7 +4,6 @@ import { useLocation, useNavigate } from 'react-router-dom';
 import axios from 'axios';
 import Header from '../components/Header'; 
 import Footer from '../components/Footer';
-import '../styles/styles.scss';
 
 const AddResourceForm = () => {
   const [resourceType, setResourceType] = useState('');
@@ -76,7 +75,6 @@ const AddResourceForm = () => {
     }
   };
   
-
   const handleNavigateToDisasterCard = () => {
     navigate('/disastercard');
   };
@@ -85,7 +83,7 @@ const AddResourceForm = () => {
     <div className="wrapper-res">
       <Header />
       <div className="content-res">
-        <div className="container">
+        <div className="container mt-5 mb-5"> {/* Add margin to top and bottom */}
           <div className="row justify-content-center align-items-center">
             <div className="col-md-6">
               <form onSubmit={handleSubmit} className="p-4 rounded add-res-container orange-form">

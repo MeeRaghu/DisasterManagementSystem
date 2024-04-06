@@ -7,7 +7,7 @@ import Footer from '../components/Footer';
 import '../styles/Login.scss';
 import 'bootstrap/dist/css/bootstrap.min.css';
 
-export default function Login() {
+export default function Login({onLogin }) {
     const navigate = useNavigate();
     const [data, setData] = useState({
         email: '',
@@ -36,6 +36,7 @@ export default function Login() {
             const responseData = response.data;
             delete responseData.confirmpassword;
             delete responseData.password;
+       
     
             if (responseData.error) {
                 // Clear previous errors
@@ -54,6 +55,7 @@ export default function Login() {
                 // Clear form data and errors on successful login
                 setData({});
                 setErrors({});
+                onLogin(responseData);
                 localStorage.setItem("user", JSON.stringify(responseData))
                 navigate('/disasterCard');
             }
@@ -84,14 +86,6 @@ export default function Login() {
         }
 
         return errors;
-    };
-
-    const resetForm = () => {
-        setData({
-            email: '',
-            password: '',
-        });
-        setErrors({});
     };
 
     const handleForgotPassword = () => {
@@ -132,7 +126,6 @@ export default function Login() {
                         </div>
                         <div className="d-grid gap-2 d-md-flex justify-content-md-center">
                             <button type='submit' className="btn btn-primary me-md-2">Login</button>
-                            <button type='button' className="btn btn-secondary ms-md-2" onClick={resetForm}>Reset</button>
                         </div>
                         <div className="mt-3 text-center">
                             <Link to="/forgotPassword" onClick={handleForgotPassword}>Forgot Password?</Link>

@@ -31,51 +31,66 @@ const ResourceApproval = () => {
     setShowModal(true);
   };
 
-  const handleReject = async (resourceId) => {
-    try {
-      // Send rejection email
-      await axios.post('http://localhost:5500/sendApprovalEmail', {
-        email: selectedUser.email,
-        status: 'rejected',
-        userName:selectedUser.name
-      });
-      console.log("Rejection Email sent successfully");
-  
-      // Set flag in DB
-      await setFlagInDB(resourceId, false);
-  
-      // Update the resource status
-      setResourceStatus(prevStatus => ({
-        ...prevStatus,
-        [resourceId]: false
-      }));
-    } catch (error) {
-      console.error('Error sending rejection email:', error);
-    }
-  };
-  
   const handleConfirmApprove = async (resourceId) => {
     try {
-      // Send approval email with status set to "approved"
-      await axios.post('http://localhost:5500/sendApprovalEmail', {
-        email: selectedUser.email,
-        status: 'approved',
-        userName:selectedUser.name
-      });
-      console.log("Approval Email sent successfully");
+      const confirmApprove = window.confirm("Are you sure you want to approve this resource?");
+      if (confirmApprove) {
+        // Send approval email with status set to "approved"
+        await axios.post('http://localhost:5500/sendApprovalEmail', {
+          email: selectedUser.email,
+          status: 'approved',
+          userName: selectedUser.name
+        });
+        console.log("Approval Email sent successfully");
   
-      // Set flag in DB
-      await setFlagInDB(resourceId, true);
+        // Set flag in DB
+        await setFlagInDB(resourceId, true);
   
-      // Update the resource status
-      setResourceStatus(prevStatus => ({
-        ...prevStatus,
-        [resourceId]: true
-      }));
+        // Update the resource status immediately within requestedResources
+        setRequestedResources(resources =>
+          resources.map(resource => {
+            if (resource._id === resourceId) {
+              return { ...resource, isApproved: true };
+            }
+            return resource;
+          })
+        );
+      }
     } catch (error) {
       console.error('Error sending approval email:', error);
     }
   };
+  
+  const handleReject = async (resourceId) => {
+    try {
+      const confirmReject = window.confirm("Are you sure you want to reject this resource?");
+      if (confirmReject) {
+        // Send rejection email
+        await axios.post('http://localhost:5500/sendApprovalEmail', {
+          email: selectedUser.email,
+          status: 'rejected',
+          userName: selectedUser.name
+        });
+        console.log("Rejection Email sent successfully");
+  
+        // Set flag in DB
+        await setFlagInDB(resourceId, false);
+  
+        // Update the resource status immediately within requestedResources
+        setRequestedResources(resources =>
+          resources.map(resource => {
+            if (resource._id === resourceId) {
+              return { ...resource, isApproved: false };
+            }
+            return resource;
+          })
+        );
+      }
+    } catch (error) {
+      console.error('Error sending rejection email:', error);
+    }
+  };
+
   
   const setFlagInDB = async (resourceId, isApproved) => {
     try {
@@ -154,7 +169,8 @@ const ResourceApproval = () => {
 
         <Modal show={showModal} onHide={() => setShowModal(false)} size="xl">
           <Modal.Header closeButton className="modal-header">
-            <Modal.Title className="modal-title">Requested Resources</Modal.Title>
+           
+            <Modal.Title className="modal-title">{selectedUser && selectedUser.name}'s Requested Resources</Modal.Title>
           </Modal.Header>
           <Modal.Body className="modal-body">
             {requestedResources !== null && requestedResources.length > 0 ? (
