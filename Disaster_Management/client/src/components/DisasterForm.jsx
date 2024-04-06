@@ -128,7 +128,7 @@ const DisasterForm = () => {
   return (
     <div>
       <Header />
-      <div className="container mt-5">
+      <div className="container mt-5 mb-5">
         <h2 className="text-center mb-4">Disaster Form</h2>
         <form className="myForm" onSubmit={handleSubmit} noValidate>
           <div className="mb-3">

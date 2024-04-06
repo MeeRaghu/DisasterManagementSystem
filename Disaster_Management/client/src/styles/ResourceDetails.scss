@@ -1,0 +1,42 @@
+.custom-card {
+    border: 1px solid #ddd;
+    border-radius: 8px;
+    padding: 15px;
+    margin-bottom: 20px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    background-color: #f9f9f9; /* Light gray background color */
+    
+  }
+  
+  .disaster-info {
+    margin-bottom: 15px;
+  }
+  
+  .disaster-type-box {
+    background-color: #ffc107; /* Yellow background color */
+    color: #333; /* Dark text color */
+    font-weight: bold;
+    padding: 5px 10px;
+    border-radius: 5px;
+    margin-bottom: 5px;
+    text-align: center;
+  }
+  
+  .disaster-location-box {
+    background-color: #007bff; /* Blue background color */
+    color: #fff; /* White text color */
+    padding: 5px 10px;
+    border-radius: 5px;
+    margin-bottom: 5px;
+  }
+  
+  .pagination {
+    margin-top: 20px;
+  }
+  
+  .page-link {
+    cursor: pointer;
+  }
+.to-right{
+    float:right
+}

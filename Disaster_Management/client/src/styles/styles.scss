@@ -204,13 +204,13 @@ hr{
 
 
 .orange-form {
-  background-color: orange; /* Apply orange color only to the form */
+  background-color: #e3963e; /* Apply orange color only to the form */
 }
 
 .wrapper-res {
   display: flex;
   flex-direction: column;
-  min-height: 100vh;
+  //min-height: 100vh;
 }
 
 .content-res {
@@ -219,4 +219,56 @@ hr{
   justify-content: center;
   align-items: center;
 }
+
+.nav-link-box,
+.auth-link-box,
+.admin-link-box,
+.disaster-form-toggle,
+.home-disaster-card-toggle,
+.resource-approval-toggle,
+.logout {
+  display: inline-block;
+  padding: 10px 15px;
+  margin-right: 10px;
+  border: 1px solid lightyellow; /* Add border to create box */
+  border-radius: 5px; /* Add border radius for rounded corners */
+  text-decoration: none;
+  color: #000; /* Change text color */
+  transition: background-color 0.3s, color 0.3s; /* Add transition effect */
+  width:120px;
+  height:60px;
+  align-content: center;
+  border-radius: 10px;
+  
+}
+
+.nav-link-box:hover,
+.auth-link-box:hover,
+.admin-link-box:hover,
+.weather-button:hover,
+.disaster-form-toggle:hover,
+.home-disaster-card-toggle:hover,
+.resource-approval-toggle:hover,
+.logout:hover {
+  background-color: #eee; /* Change background color on hover */
+  color: #000; /* Change text color on hover */
+  border: 1px solid lightyellow;
+  border-radius: 10px;
+}
+.weather-button {
+  display: inline-block;
+  padding: 10px 15px;
+  margin-right: 10px;
+  border: 1px solid lightyellow; /* Add border to create box */
+  border-radius: 10px ; /* Add border radius for rounded corners */
+  background-color: black; /* Transparent background */
+  color: white; /* Change text color */
+  transition: background-color 0.3s, color 0.3s; /* Add transition effect */
+}
+
+.weather-button:hover {
+  background-color: #eee; /* Change background color on hover */
+  color: #000; /* Change text color on hover */
+}
+
 
