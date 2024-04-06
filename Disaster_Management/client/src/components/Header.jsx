@@ -3,7 +3,7 @@ import { Link, useLocation, useNavigate } from 'react-router-dom';
 import axios from 'axios';
 import Weather from './WeatherApp';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faHome, faBuilding, faUser, faSignOutAlt } from '@fortawesome/free-solid-svg-icons'; // Import necessary icons
+import { faHome, faBuilding, faUser, faSignOutAlt } from '@fortawesome/free-solid-svg-icons';
 import '../styles/styles.scss';
 
 const Header = ({ className }) => {
@@ -39,7 +39,7 @@ const Header = ({ className }) => {
   const handleLogout = async () => {
     try {
       await axios.post('http://localhost:5500/logout', null, { withCredentials: true });
-      localStorage.clear()
+      localStorage.clear();
       navigate('/');
       window.location.reload();
     } catch (error) {
@@ -48,41 +48,98 @@ const Header = ({ className }) => {
   };
 
   const navigateToResourceApproval = () => {
-    navigate('/resourceApproval'); // Redirect to the ResourceApproval page
+    navigate('/resourceApproval');
   };
 
   const navigateToDisasterCard = () => {
-    navigate('/disasterCard'); // Redirect to the DisasterCard page
+    navigate('/disasterCard');
   };
 
   const isHomePage = location.pathname === '/';
   const isLoginPage = location.pathname === '/login';
   const isRegisterPage = location.pathname === '/register';
+  const isLoggedIn = !!userName;
 
   return (
     <header className={`header ${className}`}>
       <nav className="nav">
         <div className="logo">
-          <p><FontAwesomeIcon icon={faBuilding} /> Binary Bridge</p> {/* Add Building icon */}
+          <p>
+            <FontAwesomeIcon icon={faBuilding} />
+            {' '}
+            Binary Bridge
+          </p>
         </div>
         <div className="nav-links">
-          {!isHomePage && !userName && <Link to="/"><FontAwesomeIcon icon={faHome} /> Home</Link>} {/* Add Home icon and condition for user */}
+          {!isHomePage && !userName && (
+            <Link to="/" className="nav-link-box">
+              <FontAwesomeIcon icon={faHome} />
+              {' '}
+              Home
+            </Link>
+          )}
           {userName && (
-            <div className="welcome-message"> 
-              {isAdmin ? <p><FontAwesomeIcon icon={faUser} /> {/* Add User icon */} Admin</p> : <p> <FontAwesomeIcon icon={faUser} /> {/* Add User icon */}{userName}</p>}
+            <div className="welcome-message">
+              {isAdmin ? (
+                <Link  className="nav-link-box">
+                  <FontAwesomeIcon icon={faUser} />
+                  {' '}
+                  Admin
+                </Link>
+              ) : (
+                <Link  className="nav-link-box">
+                  {' '}
+                  <FontAwesomeIcon icon={faUser} />
+                  {' '}
+                  {userName}
+                </Link>
+              )}
             </div>
           )}
-          {isHomePage && <button onClick={toggleWeatherPopup}>Weather App</button>}
-          {!userName && !isLoginPage && <Link to="/login">Sign In</Link>}
-          {!userName && !isRegisterPage && <Link to="/register">Sign Up</Link>}
-          {isAdmin && location.pathname !== '/disasterForm' && <Link to="/disasterForm">ManageDisaster</Link>}
-          {isAdmin && location.pathname === '/disasterForm' && (
-            <p className="toggle" onClick={navigateToDisasterCard}>Disaster Card</p>
+          {isHomePage && (
+            <button onClick={toggleWeatherPopup} className="weather-button">
+              Weather App
+            </button>
           )}
-          {isAdmin && <p className="toggle" onClick={navigateToResourceApproval}>Approve Resource</p>}
+          {!userName && !isLoginPage && (
+            <Link to="/login" className="auth-link-box">
+              Sign In
+            </Link>
+          )}
+          {!userName && !isRegisterPage && (
+            <Link to="/register" className="auth-link-box">
+              Sign Up
+            </Link>
+          )}
+          {isAdmin && (
+  <>
+    {location.pathname !== '/disasterForm' && (
+      <Link to="/disasterForm" className="nav-link-box">
+        Manage Disaster
+      </Link>
+    )}
+    {location.pathname !== '/disasterCard' && (
+      <Link to="/disasterCard" className="nav-link-box">
+        Disaster Card
+      </Link>
+    )}
+  </>
+)}
+
+          {isLoggedIn && isHomePage && (
+            <Link to="/disasterCard" className="nav-link-box">
+              Disaster Card
+            </Link>
+          )}
+          {isAdmin && (
+            <Link to="/resourceApproval" className="nav-link-box">
+              Approve Resource
+            </Link>
+          )}
           {userName && (
             <p className="logout" onClick={handleLogout}>
-              <FontAwesomeIcon icon={faSignOutAlt} /> {/* Add Logout icon */}
+              <FontAwesomeIcon icon={faSignOutAlt} />
+              {' '}
               Logout
             </p>
           )}

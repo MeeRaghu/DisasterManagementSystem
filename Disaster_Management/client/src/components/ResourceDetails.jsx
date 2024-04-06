@@ -3,6 +3,7 @@ import axios from "axios";
 import { useLocation, useNavigate } from "react-router-dom";
 import Header from "../components/Header";
 import Footer from "../components/Footer";
+import '../styles/ResourceDetails.scss';
 
 const ResourceCardList = () => {
   const [resources, setResources] = useState([]);
@@ -13,6 +14,8 @@ const ResourceCardList = () => {
     urgency: "",
     comments: "",
   });
+  const [currentPage, setCurrentPage] = useState(1);
+  const [resourcesPerPage] = useState(6); 
   const location = useLocation();
   const navigate = useNavigate();
   const resourceId = location.state && location.state.resourceId;
@@ -81,36 +84,45 @@ const ResourceCardList = () => {
     }
   };
 
-  return (
-    <div style={{ display: "flex", flexDirection: "column", minHeight: "100vh" }}>
-      <Header />
-      <div className="container mt-5 flex-grow-1">
-        <div
-          className="disaster-header"
-          style={{
-            display: "flex",
-            justifyContent: "space-between",
-            alignItems: "center",
-          }}
-        >
-          <h2 className="text-center mb-4">Resource Details</h2>
-          {!isAdmin && (
-            <button
-              type="button"
-              onClick={() => navigate('/disastercard')}
-              className="btn btn-md btn-primary"
-            >
-              Back
-            </button>
-          )}
-        </div>
+  // Get current resources
+  const indexOfLastResource = currentPage * resourcesPerPage;
+  const indexOfFirstResource = indexOfLastResource - resourcesPerPage;
+  const currentResources = resources.slice(indexOfFirstResource, indexOfLastResource);
 
-        {resources.length > 0 ? (
+  // Change page
+  const paginate = (pageNumber) => setCurrentPage(pageNumber);
+
+  return (
+    <div className="resource-card-list-container">
+      <Header />
+      <div className="container mt-5">
+        <div className="row">
+          {!isAdmin && (
+            <div className="col-md-12 mb-2">
+              <button
+                type="button"
+                onClick={() => navigate('/disastercard')}
+                className="btn btn-md btn-primary to-right"
+              >
+                Back
+              </button>
+            </div>
+          )}
+          <div className="col-md-12 mb-4">
+            <h2 className="text-center">Resource Details</h2>
+          </div>
+        </div>
+        {currentResources.length > 0 ? (
           <div className="row">
-            {resources.map((resource) => (
+            {currentResources.map((resource) => (
               <div className="col-md-4 mb-4" key={resource._id}>
-                <div className="card">
-                  <div className="card-body">
+                <div className="card custom-card">
+                  <div className="card-body" style={{ maxHeight: "275px", overflowY: "auto" }}>
+                    <div className="disaster-info">
+                      <div className="disaster-type-box">{resource.disasterDetails.type}</div>
+                      { //<div className="disaster-location-box">{resource.disasterDetails.location}</div> 
+                      }
+                    </div>
                     {editingId === resource._id ? (
                       <>
                         <input
@@ -192,9 +204,23 @@ const ResourceCardList = () => {
             ))}
           </div>
         ) : (
-          <div className="text-center flex-grow-1 d-flex align-items-center justify-content-center">
+          <div className="text-center">
             <h5>No resources found</h5>
           </div>
+        )}
+        {/* Pagination */}
+        {resources.length > resourcesPerPage && (
+          <nav>
+            <ul className="pagination justify-content-center">
+              {Array.from({ length: Math.ceil(resources.length / resourcesPerPage) }, (_, i) => (
+                <li key={i} className={`page-item ${currentPage === i + 1 ? 'active' : ''}`}>
+                  <button onClick={() => paginate(i + 1)} className="page-link">
+                    {i + 1}
+                  </button>
+                </li>
+              ))}
+            </ul>
+          </nav>
         )}
       </div>
       <Footer />

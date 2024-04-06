@@ -1,4 +1,7 @@
 const Resource = require("../models/resource");
+const Disaster = require("../models/disasterModel"); 
+const mongoose = require('mongoose');
+
 
 // Test Endpoint
 const test = (req, res) => {
@@ -49,19 +52,38 @@ const getResources = async (req, res) => {
 };
 
 
+
+
 const getResourcesByUserId = async (req, res) => {
     try {
         const { userId } = req.params;
-        const resources = await Resource.find({ userId });
-        if (!resources || resources.length === 0) {
+
+        const resourcesWithDisaster = await Resource.aggregate([
+            { $match: { userId: new mongoose.Types.ObjectId(userId) } }, 
+            {
+                $lookup: {
+                    from: "disasters", 
+                    localField: "disasterId", 
+                    foreignField: "_id", 
+                    as: "disasterDetails" 
+                }
+            },
+            {
+                $unwind: "$disasterDetails" 
+            }
+        ]);
+
+        if (!resourcesWithDisaster || resourcesWithDisaster.length === 0) {
             return res.status(404).json({ message: 'No resources found for this user' });
         }
-        res.status(200).json(resources);
+
+        res.status(200).json(resourcesWithDisaster);
     } catch (error) {
         console.error('Error fetching resources by user ID:', error);
         res.status(500).json({ error: 'Internal server error' });
     }
 };
+
 
 
 
